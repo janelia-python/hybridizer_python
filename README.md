@@ -20,20 +20,8 @@ License:
 
 
 ```python
-from bioshake_device import BioshakeDevice
-dev = BioshakeDevice() # Automatically finds device if one available
-dev = BioshakeDevice('/dev/ttyUSB0') # Linux specific port
-dev = BioshakeDevice('/dev/tty.usbmodem262471') # Mac OS X specific port
-dev = BioshakeDevice('COM3') # Windows specific port
-dev.get_description()
-dev.set_shake_target_speed(1000)
-dev.shake_on()
-dev.shake_off()
-dev.set_temp_target(45)
-dev.temp_on()
-dev.temp_off()
-devs = BioshakeDevices()  # Automatically finds all available devices
-dev = devs[0]
+from hybridizer import Hybridizer
+hyb = Hybridizer()
 ```
 
 ##Installation
@@ -45,10 +33,10 @@ dev = devs[0]
 [Setup Python for Mac OS X](./PYTHON_SETUP_MAC_OS_X.md)
 
 ```shell
-mkdir -p ~/virtualenvs/bioshake_device
-virtualenv ~/virtualenvs/bioshake_device
-source ~/virtualenvs/bioshake_device/bin/activate
-pip install bioshake_device
+mkdir -p ~/virtualenvs/hybridizer
+virtualenv ~/virtualenvs/hybridizer
+source ~/virtualenvs/hybridizer/bin/activate
+pip install hybridizer
 ```
 
 ###Windows
@@ -56,7 +44,7 @@ pip install bioshake_device
 [Setup Python for Windows](./PYTHON_SETUP_WINDOWS.md)
 
 ```shell
-virtualenv C:\virtualenvs\bioshake_device
-C:\virtualenvs\bioshake_device\Scripts\activate
-pip install bioshake_device
+virtualenv C:\virtualenvs\hybridizer
+C:\virtualenvs\hybridizer\Scripts\activate
+pip install hybridizer
 ```
