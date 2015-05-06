@@ -3,7 +3,7 @@ from serial_device2 import find_serial_device_ports
 from modular_device import ModularDevices
 from bioshake_device import BioshakeDevice
 from exceptions import Exception
-
+import os
 
 try:
     from pkg_resources import get_distribution, DistributionNotFound
