@@ -44,13 +44,13 @@ class Hybridizer(object):
         ports = find_serial_device_ports(debug=self._debug)
         self._debug_print('Found serial devices on ports ' + str(ports))
         self._debug_print('Identifying connected devices (may take some time)...')
-        try:
-            self.bsc = BioshakeDevice()
-        except RuntimeError:
-            # try one more time
-            self.bsc = BioshakeDevice()
-        self._debug_print('Found bioshake device on port ' + str(self.bsc.get_port()))
-        ports.remove(self.bsc.get_port())
+        # try:
+        #     self.bsc = BioshakeDevice()
+        # except RuntimeError:
+        #     # try one more time
+        #     self.bsc = BioshakeDevice()
+        # self._debug_print('Found bioshake device on port ' + str(self.bsc.get_port()))
+        # ports.remove(self.bsc.get_port())
         modular_devices = ModularDevices(try_ports=ports)
 
         try:
@@ -192,10 +192,10 @@ class Hybridizer(object):
         self.set_valve_off('system')
         print('dispensing ' + valve_key + ' into microplate...')
         time.sleep(10)
-        self.bsc.shake_on()
+        # self.bsc.shake_on()
         print('shaking...')
         time.sleep(10)
-        self.bsc.shake_off()
+        # self.bsc.shake_off()
         self.set_valve_off('asp')
         print('aspirating ' + valve_key + ' from microplate...')
         time.sleep(20)
