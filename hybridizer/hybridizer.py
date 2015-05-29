@@ -126,9 +126,9 @@ class Hybridizer(object):
         except KeyError:
             raise HybridizerError('Unknown valve key.')
 
-    def set_valves_on(self, valve_key_list):
+    def set_valves_on(self, valve_keys):
         try:
-            channels = [self._valves[valve_key]['channel'] for valve_key in valve_key_list]
+            channels = [self._valves[valve_key]['channel'] for valve_key in valve_keys]
             self._msc.set_channels_on(channels)
         except KeyError:
             raise HybridizerError('Unknown valve key.')
@@ -141,9 +141,9 @@ class Hybridizer(object):
         except KeyError:
             raise HybridizerError('Unknown valve key.')
 
-    def set_valves_off(self, valve_key_list):
+    def set_valves_off(self, valve_keys):
         try:
-            channels = [self._valves[valve_key]['channel'] for valve_key in valve_key_list]
+            channels = [self._valves[valve_key]['channel'] for valve_key in valve_keys]
             self._msc.set_channels_off(channels)
         except KeyError:
             raise HybridizerError('Unknown valve key.')
@@ -171,8 +171,8 @@ class Hybridizer(object):
         except KeyError:
             raise HybridizerError('Unknown valve key or valve does not have analog_input.')
 
-    def set_valves_on_until_serial(self, valve_key_list, percent):
-        for valve_key in valve_key_list:
+    def set_valves_on_until_serial(self, valve_keys, percent):
+        for valve_key in valve_keys:
             self.set_valve_on_until(valve_key,percent)
 
     def setup(self):
@@ -182,7 +182,7 @@ class Hybridizer(object):
         time.sleep(10)
         self.set_all_valves_off()
 
-    def run(self,valve_key):
+    def run_chemical(self,valve_key):
         print('running ' + valve_key + '...')
         self.set_valves_on(['primer',valve_key])
         self.set_valve_on('system')
@@ -211,6 +211,10 @@ class Hybridizer(object):
         self.set_all_valves_off()
         print(valve_key + ' finished!')
 
+    def run_chemicals(self):
+        valve_keys = ['wash','red','green','blue','yellow','wash','wash']
+        for valve_key in valve_keys:
+            self.run_chemical(valve_key)
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
 
