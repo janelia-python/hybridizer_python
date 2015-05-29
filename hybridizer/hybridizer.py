@@ -44,13 +44,13 @@ class Hybridizer(object):
         ports = find_serial_device_ports(debug=self._debug)
         self._debug_print('Found serial devices on ports ' + str(ports))
         self._debug_print('Identifying connected devices (may take some time)...')
-        # try:
-        #     self.bsc = BioshakeDevice()
-        # except RuntimeError:
-        #     # try one more time
-        #     self.bsc = BioshakeDevice()
-        # self._debug_print('Found bioshake device on port ' + str(self.bsc.get_port()))
-        # ports.remove(self.bsc.get_port())
+        try:
+            self.bsc = BioshakeDevice()
+        except RuntimeError:
+            # try one more time
+            self.bsc = BioshakeDevice()
+        self._debug_print('Found bioshake device on port ' + str(self.bsc.get_port()))
+        ports.remove(self.bsc.get_port())
         modular_devices = ModularDevices(try_ports=ports)
 
         try:
@@ -101,13 +101,13 @@ class Hybridizer(object):
                 'channel' : 9,
             },
             'green' : {
-                'channel' : 9,
-            },
-            'yellow' : {
                 'channel' : 10,
             },
-            'blue' : {
+            'yellow' : {
                 'channel' : 11,
+            },
+            'blue' : {
+                'channel' : 12,
             },
             'wash' : {
                 'channel' : 13,
@@ -150,7 +150,7 @@ class Hybridizer(object):
 
     def set_all_valves_off(self):
         valve_keys = self.get_valves()
-        set_valves_off(valve_keys)
+        self.set_valves_off(valve_keys)
 
     def get_valves(self):
         valve_keys = self._valves.keys()
@@ -175,12 +175,19 @@ class Hybridizer(object):
         for valve_key in valve_key_list:
             self.set_valve_on_until(valve_key,percent)
 
+    def setup(self):
+        self.set_all_valves_off()
+        self.set_valves_on(['primer','quad1','quad2','quad3','quad4','quad5','quad6'])
+        print('setting up...')
+        time.sleep(10)
+        self.set_all_valves_off()
+
     def run(self,valve_key):
         print('running ' + valve_key + '...')
         self.set_valves_on(['primer',valve_key])
         self.set_valve_on('system')
         print('priming ' + valve_key + '...')
-        time.sleep(5)
+        time.sleep(10)
         self.set_valve_off('system')
         print('aspirating ' + valve_key + '...')
         time.sleep(5)
@@ -192,14 +199,16 @@ class Hybridizer(object):
         self.set_valve_off('system')
         print('dispensing ' + valve_key + ' into microplate...')
         time.sleep(10)
-        # self.bsc.shake_on()
+        self.set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
+        self.bsc.set_shake_target_speed(10)
+        self.bsc.shake_on()
         print('shaking...')
         time.sleep(10)
-        # self.bsc.shake_off()
+        self.bsc.shake_off()
         self.set_valve_off('asp')
         print('aspirating ' + valve_key + ' from microplate...')
         time.sleep(20)
-        self.set_valve_off(valve_key)
+        self.set_all_valves_off()
         print(valve_key + ' finished!')
 
 # -----------------------------------------------------------------------------------------
