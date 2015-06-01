@@ -34,7 +34,80 @@ class HybridizerError(Exception):
 
 class Hybridizer(object):
     '''
+    This Python package (hybridizer) creates a class named Hybridizer to
+    communcate with and control the Janelia Hybridizer. The hybridizer
+    uses two hardware control devices, the mixed_signal_controller
+    modular_device, and the bioshake_device. The
+    mixed_signal_controller both switches the valves and reads the
+    analog signals from the cylinder hall effect sensors. The
+    bioshake_device controls the heater/shaker.
+    Example Usage:
+
+    hyb = Hybridizer() #Automatically finds devices, may take some time
+    hyb.setup()
+    hyb.run_chemicals()
     '''
+    _SETUP_DURATION = 10
+    _PRIME_DURATION = 10
+    _PRIME_ASPIRATE_DURATION = 5
+    _LOAD_DURATION = 20
+    _DISPENSE_DURATION = 10
+    _SHAKE_SPEED = 200
+    _SHAKE_DURATION = 10
+    _CHEMICAL_ASPIRATE_DURATION = 20
+    _CHEMICALS = ['red','green','blue','yellow','wash']
+    _VALVES = {
+        'primer' : {
+            'channel' : 0,
+            'analog_input' : 0,
+        },
+        'quad1' : {
+            'channel' : 1,
+            'analog_input' : 1,
+        },
+        'quad2' : {
+            'channel' : 2,
+            'analog_input' : 2,
+        },
+        'quad3' : {
+            'channel' : 3,
+            'analog_input' : 3,
+        },
+        'quad4' : {
+            'channel' : 4,
+            'analog_input' : 4,
+        },
+        'quad5' : {
+            'channel' : 5,
+            'analog_input' : 5,
+        },
+        'quad6' : {
+            'channel' : 6,
+            'analog_input' : 6,
+        },
+        'system' : {
+            'channel' : 7,
+        },
+        'asp' : {
+            'channel' : 8,
+        },
+        'red' : {
+            'channel' : 9,
+        },
+        'green' : {
+            'channel' : 10,
+        },
+        'yellow' : {
+            'channel' : 11,
+        },
+        'blue' : {
+            'channel' : 12,
+        },
+        'wash' : {
+            'channel' : 13,
+        },
+    }
+
     def __init__(self,*args,**kwargs):
         if 'debug' in kwargs:
             self._debug = kwargs['debug']
@@ -45,12 +118,12 @@ class Hybridizer(object):
         self._debug_print('Found serial devices on ports ' + str(ports))
         self._debug_print('Identifying connected devices (may take some time)...')
         try:
-            self.bsc = BioshakeDevice()
+            self._bsc = BioshakeDevice()
         except RuntimeError:
             # try one more time
-            self.bsc = BioshakeDevice()
-        self._debug_print('Found bioshake device on port ' + str(self.bsc.get_port()))
-        ports.remove(self.bsc.get_port())
+            self._bsc = BioshakeDevice()
+        self._debug_print('Found bioshake device on port ' + str(self._bsc.get_port()))
+        ports.remove(self._bsc.get_port())
         modular_devices = ModularDevices(try_ports=ports)
 
         try:
@@ -62,104 +135,97 @@ class Hybridizer(object):
         self._msc = msc_dict[msc_dict.keys()[0]]
         self._debug_print('Found mixed_signal_controller on port ' + str(self._msc.get_port()))
 
-        self._valves = {
-            'primer' : {
-                'channel' : 0,
-                'analog_input' : 0,
-            },
-            'quad1' : {
-                'channel' : 1,
-                'analog_input' : 1,
-            },
-            'quad2' : {
-                'channel' : 2,
-                'analog_input' : 2,
-            },
-            'quad3' : {
-                'channel' : 3,
-                'analog_input' : 3,
-            },
-            'quad4' : {
-                'channel' : 4,
-                'analog_input' : 4,
-            },
-            'quad5' : {
-                'channel' : 5,
-                'analog_input' : 5,
-            },
-            'quad6' : {
-                'channel' : 6,
-                'analog_input' : 6,
-            },
-            'system' : {
-                'channel' : 7,
-            },
-            'asp' : {
-                'channel' : 8,
-            },
-            'red' : {
-                'channel' : 9,
-            },
-            'green' : {
-                'channel' : 10,
-            },
-            'yellow' : {
-                'channel' : 11,
-            },
-            'blue' : {
-                'channel' : 12,
-            },
-            'wash' : {
-                'channel' : 13,
-            },
-        }
+    def setup(self):
+        self._set_all_valves_off()
+        self._set_valves_on(['primer','quad1','quad2','quad3','quad4','quad5','quad6'])
+        print('setting up for ' + str(self._SETUP_DURATION) + 's...')
+        time.sleep(self._SETUP_DURATION)
+        self._set_all_valves_off()
+
+    def get_chemicals(self):
+        return self._CHEMICALS
+
+    def run_chemical(self,chemical):
+        if (chemical not in self._CHEMICALS) or (chemical not in self._VALVES):
+            raise HybridizerError('Unknown chemical')
+        print('running ' + chemical + '...')
+        self._set_valves_on(['primer',chemical])
+        self._set_valve_on('system')
+        print('priming ' + chemical + ' for ' + str(self._PRIME_DURATION) + 's...')
+        time.sleep(self._PRIME_DURATION)
+        self._set_valve_off('system')
+        print('aspirating ' + chemical + ' for ' + str(self._PRIME_ASPIRATE_DURATION) + 's...')
+        time.sleep(self._PRIME_ASPIRATE_DURATION)
+        self._set_valve_off('primer')
+        self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','asp'])
+        self._set_valve_on('system')
+        print('loading ' + chemical + ' into syringes for ' + str(self._LOAD_DURATION) + 's...')
+        time.sleep(self._LOAD_DURATION)
+        self._set_valve_off('system')
+        print('dispensing ' + chemical + ' into microplate for ' + str(self._DISPENSE_DURATION) + 's...')
+        time.sleep(self._DISPENSE_DURATION)
+        self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
+        self._bsc.shake_on(self._SHAKE_SPEED)
+        print('shaking for ' + str(self._SHAKE_DURATION) + 's...')
+        time.sleep(self._SHAKE_DURATION)
+        self._bsc.shake_off()
+        self._set_valve_off('asp')
+        print('aspirating ' + chemical + ' from microplate for ' + str(self._CHEMICAL_ASPIRATE_DURATION) + 's...')
+        time.sleep(self._CHEMICAL_ASPIRATE_DURATION)
+        self._set_all_valves_off()
+        print(chemical + ' finished!')
+
+    def run_chemicals(self):
+        chemicals = ['wash','red','green','blue','yellow','wash','wash']
+        for chemical in chemicals:
+            self.run_chemical(chemical)
 
     def _debug_print(self, *args):
         if self._debug:
             print(*args)
 
-    def set_valve_on(self, valve_key):
+    def _set_valve_on(self, valve_key):
         try:
-            valve = self._valves[valve_key]
+            valve = self._VALVES[valve_key]
             channels = [valve['channel']]
             self._msc.set_channels_on(channels)
         except KeyError:
             raise HybridizerError('Unknown valve key.')
 
-    def set_valves_on(self, valve_keys):
+    def _set_valves_on(self, valve_keys):
         try:
-            channels = [self._valves[valve_key]['channel'] for valve_key in valve_keys]
+            channels = [self._VALVES[valve_key]['channel'] for valve_key in valve_keys]
             self._msc.set_channels_on(channels)
         except KeyError:
             raise HybridizerError('Unknown valve key.')
 
-    def set_valve_off(self, valve_key):
+    def _set_valve_off(self, valve_key):
         try:
-            valve = self._valves[valve_key]
+            valve = self._VALVES[valve_key]
             channels = [valve['channel']]
             self._msc.set_channels_off(channels)
         except KeyError:
             raise HybridizerError('Unknown valve key.')
 
-    def set_valves_off(self, valve_keys):
+    def _set_valves_off(self, valve_keys):
         try:
-            channels = [self._valves[valve_key]['channel'] for valve_key in valve_keys]
+            channels = [self._VALVES[valve_key]['channel'] for valve_key in valve_keys]
             self._msc.set_channels_off(channels)
         except KeyError:
             raise HybridizerError('Unknown valve key.')
 
-    def set_all_valves_off(self):
-        valve_keys = self.get_valves()
-        self.set_valves_off(valve_keys)
+    def _set_all_valves_off(self):
+        valve_keys = self._get_valves()
+        self._set_valves_off(valve_keys)
 
-    def get_valves(self):
-        valve_keys = self._valves.keys()
+    def _get_valves(self):
+        valve_keys = self._VALVES.keys()
         valve_keys.sort()
         return valve_keys
 
-    def set_valve_on_until(self, valve_key, percent):
+    def _set_valve_on_until(self, valve_key, percent):
         try:
-            valve = self._valves[valve_key]
+            valve = self._VALVES[valve_key]
             channels = [valve['channel']]
             ain = valve['analog_input']
             set_until_index = self._msc.set_channels_on_until(channels,ain,percent)
@@ -171,53 +237,13 @@ class Hybridizer(object):
         except KeyError:
             raise HybridizerError('Unknown valve key or valve does not have analog_input.')
 
-    def set_valves_on_until_serial(self, valve_keys, percent):
+    def _set_valves_on_until_serial(self, valve_keys, percent):
         for valve_key in valve_keys:
-            self.set_valve_on_until(valve_key,percent)
+            self._set_valve_on_until(valve_key,percent)
 
-    def setup(self):
-        self.set_all_valves_off()
-        self.set_valves_on(['primer','quad1','quad2','quad3','quad4','quad5','quad6'])
-        print('setting up...')
-        time.sleep(10)
-        self.set_all_valves_off()
 
-    def run_chemical(self,valve_key):
-        print('running ' + valve_key + '...')
-        self.set_valves_on(['primer',valve_key])
-        self.set_valve_on('system')
-        print('priming ' + valve_key + '...')
-        time.sleep(10)
-        self.set_valve_off('system')
-        print('aspirating ' + valve_key + '...')
-        time.sleep(5)
-        self.set_valve_off('primer')
-        self.set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','asp'])
-        self.set_valve_on('system')
-        print('loading ' + valve_key + ' into syringes...')
-        time.sleep(20)
-        self.set_valve_off('system')
-        print('dispensing ' + valve_key + ' into microplate...')
-        time.sleep(10)
-        self.set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
-        self.bsc.set_shake_target_speed(10)
-        self.bsc.shake_on()
-        print('shaking...')
-        time.sleep(10)
-        self.bsc.shake_off()
-        self.set_valve_off('asp')
-        print('aspirating ' + valve_key + ' from microplate...')
-        time.sleep(20)
-        self.set_all_valves_off()
-        print(valve_key + ' finished!')
-
-    def run_chemicals(self):
-        valve_keys = ['wash','red','green','blue','yellow','wash','wash']
-        for valve_key in valve_keys:
-            self.run_chemical(valve_key)
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
 
     debug = True
     hyb = Hybridizer(debug=debug)
-    hyb.get_valves()

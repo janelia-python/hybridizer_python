@@ -1,3 +1,15 @@
 '''
+This Python package (hybridizer) creates a class named Hybridizer to
+communcate with and control the Janelia Hybridizer. The hybridizer
+uses two hardware control devices, the mixed_signal_controller
+modular_device, and the bioshake_device. The
+mixed_signal_controller both switches the valves and reads the
+analog signals from the cylinder hall effect sensors. The
+bioshake_device controls the heater/shaker.
+Example Usage:
+
+hyb = Hybridizer() #Automatically finds devices, may take some time
+hyb.setup()
+hyb.run_chemicals()
 '''
-from hybridizer import Hybridizer
+from hybridizer import Hybridizer, HybridizerError

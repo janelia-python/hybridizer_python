@@ -23,6 +23,8 @@ License:
 ```python
 from hybridizer import Hybridizer
 hyb = Hybridizer()
+hyb.setup()
+hyb.run_chemicals()
 ```
 
 ##Installation
