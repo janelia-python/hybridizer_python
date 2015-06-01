@@ -22,5 +22,5 @@ Example Usage::
     from hybridizer import Hybridizer
     hyb = Hybridizer() #Automatically finds devices, may take some time
     hyb.setup()
-    hyb.run_chemicals()
+    hyb.run_protocol()
 

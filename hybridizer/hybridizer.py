@@ -45,7 +45,7 @@ class Hybridizer(object):
 
     hyb = Hybridizer() #Automatically finds devices, may take some time
     hyb.setup()
-    hyb.run_chemicals()
+    hyb.run_protocol()
     '''
     _SETUP_DURATION = 10
     _PRIME_DURATION = 10

@@ -24,7 +24,7 @@ License:
 from hybridizer import Hybridizer
 hyb = Hybridizer()
 hyb.setup()
-hyb.run_chemicals()
+hyb.run_protocol()
 ```
 
 ##Installation
