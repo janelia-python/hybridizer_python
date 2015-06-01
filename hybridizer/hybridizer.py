@@ -58,53 +58,53 @@ class Hybridizer(object):
     _CHEMICALS = ['red','green','blue','yellow','wash']
     _VALVES = {
         'primer' : {
-            'channel' : 0,
+            'channel' : 8,
             'analog_input' : 0,
         },
         'quad1' : {
-            'channel' : 1,
+            'channel' : 9,
             'analog_input' : 1,
         },
         'quad2' : {
-            'channel' : 2,
+            'channel' : 10,
             'analog_input' : 2,
         },
         'quad3' : {
-            'channel' : 3,
+            'channel' : 11,
             'analog_input' : 3,
         },
         'quad4' : {
-            'channel' : 4,
+            'channel' : 12,
             'analog_input' : 4,
         },
         'quad5' : {
-            'channel' : 5,
+            'channel' : 13,
             'analog_input' : 5,
         },
         'quad6' : {
-            'channel' : 6,
+            'channel' : 14,
             'analog_input' : 6,
         },
         'system' : {
-            'channel' : 7,
+            'channel' : 15,
         },
         'asp' : {
-            'channel' : 8,
+            'channel' : 16,
         },
         'red' : {
-            'channel' : 9,
+            'channel' : 17,
         },
         'green' : {
-            'channel' : 10,
+            'channel' : 18,
         },
         'yellow' : {
-            'channel' : 11,
+            'channel' : 19,
         },
         'blue' : {
-            'channel' : 12,
+            'channel' : 20,
         },
         'wash' : {
-            'channel' : 13,
+            'channel' : 21,
         },
     }
 
