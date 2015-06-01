@@ -167,7 +167,7 @@ class Hybridizer(object):
             print('dispensing ' + chemical + ' into microplate for ' + str(self._DISPENSE_DURATION) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
             time.sleep(self._DISPENSE_DURATION)
         self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
-        if (shake_speed is not None) or (shake_speed != 0):
+        if not ((shake_speed is None) or (shake_speed == 0)):
             self._bsc.shake_on(shake_speed)
             print('shaking at ' + str(shake_speed) + 'rpm for ' + str(self._SHAKE_DURATION) + 's...')
             time.sleep(self._SHAKE_DURATION)
