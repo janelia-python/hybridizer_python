@@ -52,7 +52,7 @@ class Hybridizer(object):
     _PRIME_ASPIRATE_DURATION = 5
     _LOAD_DURATION = 20
     _DISPENSE_DURATION = 10
-    _SHAKE_SPEED = 200
+    _SHAKE_SPEED_GENTLE = 200
     _SHAKE_DURATION = 10
     _CHEMICAL_ASPIRATE_DURATION = 20
     _CHEMICALS = ['red','green','blue','yellow','wash']
@@ -136,6 +136,7 @@ class Hybridizer(object):
         self._debug_print('Found mixed_signal_controller on port ' + str(self._msc.get_port()))
 
     def setup(self):
+        self._bsc.reset_device()
         self._set_all_valves_off()
         self._set_valves_on(['primer','quad1','quad2','quad3','quad4','quad5','quad6'])
         print('setting up for ' + str(self._SETUP_DURATION) + 's...')
@@ -145,7 +146,7 @@ class Hybridizer(object):
     def get_chemicals(self):
         return self._CHEMICALS
 
-    def run_chemical(self,chemical):
+    def run_chemical(self,chemical,dispense_count=1,shake_speed=None):
         if (chemical not in self._CHEMICALS) or (chemical not in self._VALVES):
             raise HybridizerError('Unknown chemical')
         print('running ' + chemical + '...')
@@ -158,27 +159,48 @@ class Hybridizer(object):
         time.sleep(self._PRIME_ASPIRATE_DURATION)
         self._set_valve_off('primer')
         self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','asp'])
-        self._set_valve_on('system')
-        print('loading ' + chemical + ' into syringes for ' + str(self._LOAD_DURATION) + 's...')
-        time.sleep(self._LOAD_DURATION)
-        self._set_valve_off('system')
-        print('dispensing ' + chemical + ' into microplate for ' + str(self._DISPENSE_DURATION) + 's...')
-        time.sleep(self._DISPENSE_DURATION)
+        for i in range(dispense_count):
+            self._set_valve_on('system')
+            print('loading ' + chemical + ' into syringes for ' + str(self._LOAD_DURATION) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
+            time.sleep(self._LOAD_DURATION)
+            self._set_valve_off('system')
+            print('dispensing ' + chemical + ' into microplate for ' + str(self._DISPENSE_DURATION) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
+            time.sleep(self._DISPENSE_DURATION)
         self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
-        self._bsc.shake_on(self._SHAKE_SPEED)
-        print('shaking for ' + str(self._SHAKE_DURATION) + 's...')
-        time.sleep(self._SHAKE_DURATION)
-        self._bsc.shake_off()
+        if (shake_speed is not None) or (shake_speed != 0):
+            self._bsc.shake_on(shake_speed)
+            print('shaking at ' + str(shake_speed) + 'rpm for ' + str(self._SHAKE_DURATION) + 's...')
+            time.sleep(self._SHAKE_DURATION)
+            self._bsc.shake_off()
         self._set_valve_off('asp')
         print('aspirating ' + chemical + ' from microplate for ' + str(self._CHEMICAL_ASPIRATE_DURATION) + 's...')
         time.sleep(self._CHEMICAL_ASPIRATE_DURATION)
         self._set_all_valves_off()
         print(chemical + ' finished!')
 
-    def run_chemicals(self):
-        chemicals = ['wash','red','green','blue','yellow','wash','wash']
-        for chemical in chemicals:
-            self.run_chemical(chemical)
+    def run_protocol(self):
+        protocol = [{'chemical':'wash',
+                     'dispense_count':1,
+                     'shake_speed':self._SHAKE_SPEED_GENTLE},
+                    {'chemical':'red',
+                     'dispense_count':1,
+                     'shake_speed':self._SHAKE_SPEED_GENTLE},
+                    {'chemical':'green',
+                     'dispense_count':1,
+                     'shake_speed':self._SHAKE_SPEED_GENTLE},
+                    {'chemical':'blue',
+                     'dispense_count':1,
+                     'shake_speed':self._SHAKE_SPEED_GENTLE},
+                    {'chemical':'yellow',
+                     'dispense_count':1,
+                     'shake_speed':self._SHAKE_SPEED_GENTLE},
+                    {'chemical':'wash',
+                     'dispense_count':1,
+                     'shake_speed':self._SHAKE_SPEED_GENTLE}]
+        for chemical_info in protocol:
+            self.run_chemical(chemical_info['chemical'],
+                              chemical_info['dispense_count'],
+                              chemical_info['shake_speed'])
 
     def _debug_print(self, *args):
         if self._debug:
