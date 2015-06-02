@@ -19,11 +19,11 @@ License:
 
 ##Example Usage
 
+[Example Config File](./example_config.yaml)
 
 ```python
 from hybridizer import Hybridizer
-hyb = Hybridizer()
-hyb.setup()
+hyb = Hybridizer(config_file_path='example_config.yaml')
 hyb.run_protocol()
 ```
 

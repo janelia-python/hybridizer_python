@@ -1,0 +1,63 @@
+chemical_aspirate_duration: 20
+dispense_duration: 10
+head:
+  primer:
+    analog_input: 0
+    channel: 8
+  quad1:
+    analog_input: 1
+    channel: 9
+  quad2:
+    analog_input: 2
+    channel: 10
+  quad3:
+    analog_input: 3
+    channel: 11
+  quad4:
+    analog_input: 4
+    channel: 12
+  quad5:
+    analog_input: 5
+    channel: 13
+  quad6:
+    analog_input: 6
+    channel: 14
+  system:
+    channel: 15
+load_duration: 20
+manifold:
+  aspirate:
+    channel: 16
+  blue:
+    channel: 20
+  green:
+    channel: 18
+  red:
+    channel: 17
+  wash:
+    channel: 21
+  yellow:
+    channel: 19
+prime_aspirate_duration: 5
+prime_duration: 10
+protocol:
+- chemical: wash
+  dispense_count: 1
+  shake_speed: 200
+- chemical: red
+  dispense_count: 1
+  shake_speed: 200
+- chemical: green
+  dispense_count: 1
+  shake_speed: 200
+- chemical: blue
+  dispense_count: 1
+  shake_speed: 200
+- chemical: yellow
+  dispense_count: 1
+  shake_speed: 200
+- chemical: wash
+  dispense_count: 1
+  shake_speed: 200
+setup_duration: 10
+shake_duration: 10

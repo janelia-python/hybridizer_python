@@ -5,6 +5,8 @@ from bioshake_device import BioshakeDevice
 from exceptions import Exception
 import os
 import time
+import yaml
+import argparse
 
 try:
     from pkg_resources import get_distribution, DistributionNotFound
@@ -23,7 +25,88 @@ else:
 
 DEBUG = True
 BAUDRATE = 9600
-
+# CONFIG = {
+#     'setup_duration' : 10,
+#     'prime_duration' : 10,
+#     'prime_aspirate_duration' : 5,
+#     'load_duration' : 20,
+#     'dispense_duration' : 10,
+#     'shake_duration' : 10,
+#     'chemical_aspirate_duration' : 20,
+#     'head' : {
+#         'primer' : {
+#             'channel' : 8,
+#             'analog_input' : 0,
+#         },
+#         'quad1' : {
+#             'channel' : 9,
+#             'analog_input' : 1,
+#         },
+#         'quad2' : {
+#             'channel' : 10,
+#             'analog_input' : 2,
+#         },
+#         'quad3' : {
+#             'channel' : 11,
+#             'analog_input' : 3,
+#         },
+#         'quad4' : {
+#             'channel' : 12,
+#             'analog_input' : 4,
+#         },
+#         'quad5' : {
+#             'channel' : 13,
+#             'analog_input' : 5,
+#         },
+#         'quad6' : {
+#             'channel' : 14,
+#             'analog_input' : 6,
+#         },
+#         'system' : {
+#             'channel' : 15,
+#         }
+#     },
+#     'manifold' : {
+#         'asp' : {
+#             'channel' : 16,
+#         },
+#         'red' : {
+#             'channel' : 17,
+#         },
+#         'green' : {
+#             'channel' : 18,
+#         },
+#         'yellow' : {
+#             'channel' : 19,
+#         },
+#         'blue' : {
+#             'channel' : 20,
+#         },
+#         'wash' : {
+#             'channel' : 21,
+#         },
+#     },
+#     'protocol' : [{'chemical' : 'wash',
+#                    'dispense_count' : 1,
+#                    'shake_speed': 200},
+#                   {'chemical' : 'red',
+#                    'dispense_count' : 1,
+#                    'shake_speed' : 200},
+#                   {'chemical' : 'green',
+#                    'dispense_count' : 1,
+#                    'shake_speed' : 200},
+#                   {'chemical' : 'blue',
+#                    'dispense_count' : 1,
+#                    'shake_speed' : 200},
+#                   {'chemical' : 'yellow',
+#                    'dispense_count' : 1,
+#                    'shake_speed' : 200},
+#                   {'chemical' : 'wash',
+#                    'dispense_count' : 1,
+#                    'shake_speed' : 200}]
+# }
+# with open('config.yaml', 'w') as f:
+#     yaml.dump(CONFIG, f, default_flow_style=False)
 
 class HybridizerError(Exception):
     def __init__(self,value):
@@ -43,70 +126,9 @@ class Hybridizer(object):
     bioshake_device controls the heater/shaker.
     Example Usage:
 
-    hyb = Hybridizer() #Automatically finds devices, may take some time
-    hyb.setup()
+    hyb = Hybridizer(config_file_path='example_config.yaml')
     hyb.run_protocol()
     '''
-    _SETUP_DURATION = 10
-    _PRIME_DURATION = 10
-    _PRIME_ASPIRATE_DURATION = 5
-    _LOAD_DURATION = 20
-    _DISPENSE_DURATION = 10
-    _SHAKE_SPEED_GENTLE = 200
-    _SHAKE_DURATION = 10
-    _CHEMICAL_ASPIRATE_DURATION = 20
-    _CHEMICALS = ['red','green','blue','yellow','wash']
-    _VALVES = {
-        'primer' : {
-            'channel' : 8,
-            'analog_input' : 0,
-        },
-        'quad1' : {
-            'channel' : 9,
-            'analog_input' : 1,
-        },
-        'quad2' : {
-            'channel' : 10,
-            'analog_input' : 2,
-        },
-        'quad3' : {
-            'channel' : 11,
-            'analog_input' : 3,
-        },
-        'quad4' : {
-            'channel' : 12,
-            'analog_input' : 4,
-        },
-        'quad5' : {
-            'channel' : 13,
-            'analog_input' : 5,
-        },
-        'quad6' : {
-            'channel' : 14,
-            'analog_input' : 6,
-        },
-        'system' : {
-            'channel' : 15,
-        },
-        'asp' : {
-            'channel' : 16,
-        },
-        'red' : {
-            'channel' : 17,
-        },
-        'green' : {
-            'channel' : 18,
-        },
-        'yellow' : {
-            'channel' : 19,
-        },
-        'blue' : {
-            'channel' : 20,
-        },
-        'wash' : {
-            'channel' : 21,
-        },
-    }
 
     def __init__(self,*args,**kwargs):
         if 'debug' in kwargs:
@@ -114,6 +136,14 @@ class Hybridizer(object):
         else:
             kwargs.update({'debug': DEBUG})
             self._debug = DEBUG
+        if 'config_file_path' in kwargs:
+            config_file_path = kwargs['config_file_path']
+            config_stream = open(config_file_path, 'r')
+            self._config = yaml.load(config_stream)
+            self._valves = self._config['head']
+            self._valves.update(self._config['manifold'])
+        else:
+            raise HybridizerError('Must provide yaml configuration file path!')
         ports = find_serial_device_ports(debug=self._debug)
         self._debug_print('Found serial devices on ports ' + str(ports))
         self._debug_print('Identifying connected devices (may take some time)...')
@@ -135,72 +165,51 @@ class Hybridizer(object):
         self._msc = msc_dict[msc_dict.keys()[0]]
         self._debug_print('Found mixed_signal_controller on port ' + str(self._msc.get_port()))
 
-    def setup(self):
+    def run_protocol(self):
+        self._setup()
+        for chemical_info in self._config['protocol']:
+            self._run_chemical(chemical_info['chemical'],
+                               chemical_info['dispense_count'],
+                               chemical_info['shake_speed'])
+
+    def _setup(self):
         self._bsc.reset_device()
         self._set_all_valves_off()
         self._set_valves_on(['primer','quad1','quad2','quad3','quad4','quad5','quad6'])
-        print('setting up for ' + str(self._SETUP_DURATION) + 's...')
-        time.sleep(self._SETUP_DURATION)
+        self._debug_print('setting up for ' + str(self._config['setup_duration']) + 's...')
+        time.sleep(self._config['setup_duration'])
         self._set_all_valves_off()
 
-    def get_chemicals(self):
-        return self._CHEMICALS
-
-    def run_chemical(self,chemical,dispense_count=1,shake_speed=None):
-        if (chemical not in self._CHEMICALS) or (chemical not in self._VALVES):
-            raise HybridizerError('Unknown chemical')
-        print('running ' + chemical + '...')
-        self._set_valves_on(['primer',chemical])
-        self._set_valve_on('system')
-        print('priming ' + chemical + ' for ' + str(self._PRIME_DURATION) + 's...')
-        time.sleep(self._PRIME_DURATION)
+    def _run_chemical(self,chemical,dispense_count=1,shake_speed=None):
+        if (chemical not in self._valves):
+            raise HybridizerError(chemical + ' is not listed as part of the manifold in the config file!')
+        self._debug_print('running ' + chemical + '...')
+        self._set_valves_on(['primer',chemical,'system'])
+        self._debug_print('priming ' + chemical + ' for ' + str(self._config['prime_duration']) + 's...')
+        time.sleep(self._config['prime_duration'])
         self._set_valve_off('system')
-        print('aspirating ' + chemical + ' for ' + str(self._PRIME_ASPIRATE_DURATION) + 's...')
-        time.sleep(self._PRIME_ASPIRATE_DURATION)
+        self._debug_print('aspirating ' + chemical + ' for ' + str(self._config['prime_aspirate_duration']) + 's...')
+        time.sleep(self._config['prime_aspirate_duration'])
         self._set_valve_off('primer')
-        self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','asp'])
+        self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','aspirate'])
         for i in range(dispense_count):
             self._set_valve_on('system')
-            print('loading ' + chemical + ' into syringes for ' + str(self._LOAD_DURATION) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
-            time.sleep(self._LOAD_DURATION)
+            self._debug_print('loading ' + chemical + ' into syringes for ' + str(self._config['load_duration']) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
+            time.sleep(self._config['load_duration'])
             self._set_valve_off('system')
-            print('dispensing ' + chemical + ' into microplate for ' + str(self._DISPENSE_DURATION) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
-            time.sleep(self._DISPENSE_DURATION)
+            self._debug_print('dispensing ' + chemical + ' into microplate for ' + str(self._config['dispense_duration']) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
+            time.sleep(self._config['dispense_duration'])
         self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
         if not ((shake_speed is None) or (shake_speed == 0)):
             self._bsc.shake_on(shake_speed)
-            print('shaking at ' + str(shake_speed) + 'rpm for ' + str(self._SHAKE_DURATION) + 's...')
-            time.sleep(self._SHAKE_DURATION)
+            self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(self._config['shake_duration']) + 's...')
+            time.sleep(self._config['shake_duration'])
             self._bsc.shake_off()
-        self._set_valve_off('asp')
-        print('aspirating ' + chemical + ' from microplate for ' + str(self._CHEMICAL_ASPIRATE_DURATION) + 's...')
-        time.sleep(self._CHEMICAL_ASPIRATE_DURATION)
+        self._set_valve_off('aspirate')
+        self._debug_print('aspirating ' + chemical + ' from microplate for ' + str(self._config['chemical_aspirate_duration']) + 's...')
+        time.sleep(self._config['chemical_aspirate_duration'])
         self._set_all_valves_off()
-        print(chemical + ' finished!')
-
-    def run_protocol(self):
-        protocol = [{'chemical':'wash',
-                     'dispense_count':1,
-                     'shake_speed':self._SHAKE_SPEED_GENTLE},
-                    {'chemical':'red',
-                     'dispense_count':1,
-                     'shake_speed':self._SHAKE_SPEED_GENTLE},
-                    {'chemical':'green',
-                     'dispense_count':1,
-                     'shake_speed':self._SHAKE_SPEED_GENTLE},
-                    {'chemical':'blue',
-                     'dispense_count':1,
-                     'shake_speed':self._SHAKE_SPEED_GENTLE},
-                    {'chemical':'yellow',
-                     'dispense_count':1,
-                     'shake_speed':self._SHAKE_SPEED_GENTLE},
-                    {'chemical':'wash',
-                     'dispense_count':1,
-                     'shake_speed':self._SHAKE_SPEED_GENTLE}]
-        for chemical_info in protocol:
-            self.run_chemical(chemical_info['chemical'],
-                              chemical_info['dispense_count'],
-                              chemical_info['shake_speed'])
+        self._debug_print(chemical + ' finished!')
 
     def _debug_print(self, *args):
         if self._debug:
@@ -208,56 +217,56 @@ class Hybridizer(object):
 
     def _set_valve_on(self, valve_key):
         try:
-            valve = self._VALVES[valve_key]
+            valve = self._valves[valve_key]
             channels = [valve['channel']]
             self._msc.set_channels_on(channels)
         except KeyError:
-            raise HybridizerError('Unknown valve key.')
+            raise HybridizerError('Unknown valve: ' + str(valve_key) + '. Check yaml config file for errors.')
 
     def _set_valves_on(self, valve_keys):
         try:
-            channels = [self._VALVES[valve_key]['channel'] for valve_key in valve_keys]
+            channels = [self._valves[valve_key]['channel'] for valve_key in valve_keys]
             self._msc.set_channels_on(channels)
         except KeyError:
-            raise HybridizerError('Unknown valve key.')
+            raise HybridizerError('Unknown valve: ' + str(valve_key) + '. Check yaml config file for errors.')
 
     def _set_valve_off(self, valve_key):
         try:
-            valve = self._VALVES[valve_key]
+            valve = self._valves[valve_key]
             channels = [valve['channel']]
             self._msc.set_channels_off(channels)
         except KeyError:
-            raise HybridizerError('Unknown valve key.')
+            raise HybridizerError('Unknown valve: ' + str(valve_key) + '. Check yaml config file for errors.')
 
     def _set_valves_off(self, valve_keys):
         try:
-            channels = [self._VALVES[valve_key]['channel'] for valve_key in valve_keys]
+            channels = [self._valves[valve_key]['channel'] for valve_key in valve_keys]
             self._msc.set_channels_off(channels)
         except KeyError:
-            raise HybridizerError('Unknown valve key.')
+            raise HybridizerError('Unknown valve: ' + str(valve_key) + '. Check yaml config file for errors.')
 
     def _set_all_valves_off(self):
         valve_keys = self._get_valves()
         self._set_valves_off(valve_keys)
 
     def _get_valves(self):
-        valve_keys = self._VALVES.keys()
+        valve_keys = self._valves.keys()
         valve_keys.sort()
         return valve_keys
 
     def _set_valve_on_until(self, valve_key, percent):
         try:
-            valve = self._VALVES[valve_key]
+            valve = self._valves[valve_key]
             channels = [valve['channel']]
             ain = valve['analog_input']
             set_until_index = self._msc.set_channels_on_until(channels,ain,percent)
             while not self._msc.is_set_until_complete(set_until_index):
                 percent_current = self._msc.get_analog_input(ain)
-                print(str(valve_key) + ' is at ' + str(percent_current) + '%, waiting to reach ' + str(percent) + '%')
+                self._debug_print(str(valve_key) + ' is at ' + str(percent_current) + '%, waiting to reach ' + str(percent) + '%')
                 time.sleep(1)
             self._msc.remove_set_until(set_until_index)
         except KeyError:
-            raise HybridizerError('Unknown valve key or valve does not have analog_input.')
+            raise HybridizerError('Unknown valve: ' + str(valve_key) + ', or valve does not have analog_input. Check yaml config file for errors.')
 
     def _set_valves_on_until_serial(self, valve_keys, percent):
         for valve_key in valve_keys:
@@ -266,6 +275,13 @@ class Hybridizer(object):
 
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config_file_path", help="Path to yaml config file.")
+
+    args = parser.parse_args()
+    config_file_path = args.config_file_path
+    print("Config File Path: {0}".format(config_file_path))
 
     debug = True
-    hyb = Hybridizer(debug=debug)
+    hyb = Hybridizer(debug=debug,config_file_path=config_file_path)
+    hyb.run_protocol()
