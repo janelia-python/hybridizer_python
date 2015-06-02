@@ -62,7 +62,7 @@ class Hybridizer(object):
             self._valves = self._config['head']
             self._valves.update(self._config['manifold'])
         else:
-            raise HybridizerError('Must provide yaml configuration file path!')
+            raise HybridizerError('Must provide yaml configuration file path! e.g. hyb = Hybridizer(config_file_path="example_config.yaml")')
         ports = find_serial_device_ports(debug=self._debug)
         self._debug_print('Found serial devices on ports ' + str(ports))
         self._debug_print('Identifying connected devices (may take some time)...')
@@ -73,6 +73,8 @@ class Hybridizer(object):
             self._bsc = BioshakeDevice()
         self._debug_print('Found bioshake device on port ' + str(self._bsc.get_port()))
         ports.remove(self._bsc.get_port())
+        self._SHAKE_SPEED_MIN = self._bsc.get_shake_speed_min()
+        self._SHAKE_SPEED_MAX = self._bsc.get_shake_speed_max()
         modular_devices = ModularDevices(try_ports=ports)
 
         try:
@@ -89,7 +91,8 @@ class Hybridizer(object):
         for chemical_info in self._config['protocol']:
             self._run_chemical(chemical_info['chemical'],
                                chemical_info['dispense_count'],
-                               chemical_info['shake_speed'])
+                               chemical_info['shake_speed'],
+                               chemical_info['shake_duration'])
 
     def _setup(self):
         self._bsc.reset_device()
@@ -99,7 +102,7 @@ class Hybridizer(object):
         time.sleep(self._config['setup_duration'])
         self._set_all_valves_off()
 
-    def _run_chemical(self,chemical,dispense_count=1,shake_speed=None):
+    def _run_chemical(self,chemical,dispense_count=1,shake_speed=None,shake_duration=None):
         if (chemical not in self._valves):
             raise HybridizerError(chemical + ' is not listed as part of the manifold in the config file!')
         self._debug_print('running ' + chemical + '...')
@@ -119,11 +122,17 @@ class Hybridizer(object):
             self._debug_print('dispensing ' + chemical + ' into microplate for ' + str(self._config['dispense_duration']) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
             time.sleep(self._config['dispense_duration'])
         self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
-        if not ((shake_speed is None) or (shake_speed == 0)):
-            self._bsc.shake_on(shake_speed)
-            self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(self._config['shake_duration']) + 's...')
-            time.sleep(self._config['shake_duration'])
-            self._bsc.shake_off()
+        if not ((shake_duration is None) or (shake_duration <= 0)):
+            if (shake_speed is None) or (shake_speed < self._SHAKE_SPEED_MIN):
+                shake_speed = 0
+            elif shake_speed > self._SHAKE_SPEED_MAX:
+                shake_speed = self._SHAKE_SPEED_MAX
+            self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(shake_duration) + 's...')
+            if shake_speed != 0:
+                self._bsc.shake_on(shake_speed)
+            time.sleep(shake_duration)
+            if shake_speed != 0:
+                self._bsc.shake_off()
         self._set_valve_off('aspirate')
         self._debug_print('aspirating ' + chemical + ' from microplate for ' + str(self._config['chemical_aspirate_duration']) + 's...')
         time.sleep(self._config['chemical_aspirate_duration'])
