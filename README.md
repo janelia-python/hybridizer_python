@@ -42,6 +42,14 @@ source ~/virtualenvs/hybridizer/bin/activate
 pip install hybridizer
 ```
 
+On linux, you may need to add yourself to the group 'dialout' in order
+to have write permissions on the USB port:
+
+```shell
+sudo usermod -aG dialout $USER
+sudo reboot
+```
+
 ###Windows
 
 [Setup Python for Windows](./PYTHON_SETUP_WINDOWS.md)
