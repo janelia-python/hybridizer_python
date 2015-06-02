@@ -55,9 +55,9 @@ protocol:
   shake_speed: 200
 - chemical: yellow
   dispense_count: 1
-  shake_speed: 200
+  shake_speed: null
 - chemical: wash
   dispense_count: 1
-  shake_speed: 200
-setup_duration: 10
+  shake_speed: 600
+setup_duration: 20
 shake_duration: 10
