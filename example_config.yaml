@@ -40,7 +40,7 @@ manifold:
     channel: 21
   aspirate1:
     channel: 22
-prime_aspirate_duration: 5
+prime_aspirate_duration: 10
 prime_duration: 10
 shake_speed_min: &shake_speed_min 200
 shake_speed_max: &shake_speed_max 3000
