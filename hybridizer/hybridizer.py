@@ -113,7 +113,7 @@ class Hybridizer(object):
         self._debug_print('aspirating ' + chemical + ' for ' + str(self._config['prime_aspirate_duration']) + 's...')
         time.sleep(self._config['prime_aspirate_duration'])
         self._set_valve_off('primer')
-        self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','aspirate'])
+        self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','aspirate0'])
         for i in range(dispense_count):
             self._set_valve_on('system')
             self._debug_print('loading ' + chemical + ' into syringes for ' + str(self._config['load_duration']) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
@@ -133,7 +133,7 @@ class Hybridizer(object):
             time.sleep(shake_duration)
             if shake_speed != 0:
                 self._bsc.shake_off()
-        self._set_valve_off('aspirate')
+        self._set_valve_off('aspirate0')
         self._debug_print('aspirating ' + chemical + ' from microplate for ' + str(self._config['chemical_aspirate_duration']) + 's...')
         time.sleep(self._config['chemical_aspirate_duration'])
         self._set_all_valves_off()

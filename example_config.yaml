@@ -26,18 +26,20 @@ head:
     channel: 15
 load_duration: 20
 manifold:
-  aspirate:
+  water1:
     channel: 16
-  red:
+  water2:
     channel: 17
-  green:
+  water3:
     channel: 18
-  yellow:
+  water4:
     channel: 19
-  blue:
-    channel: 20
   wash:
+    channel: 20
+  aspirate0:
     channel: 21
+  aspirate1:
+    channel: 22
 prime_aspirate_duration: 5
 prime_duration: 10
 shake_speed_min: &shake_speed_min 200
@@ -47,22 +49,18 @@ protocol:
   dispense_count: 1
   shake_speed: *shake_speed_min
   shake_duration: 10
-- chemical: red
-  dispense_count: 1
+- chemical: water1
+  dispense_count: 2
   shake_speed: 400
-  shake_duration: 3
-- chemical: green
+  shake_duration: 10
+- chemical: water2
   dispense_count: 1
   shake_speed: null
   shake_duration: 10
-- chemical: blue
+- chemical: water3
   dispense_count: 1
   shake_speed: *shake_speed_min
   shake_duration: 0
-- chemical: yellow
-  dispense_count: 1
-  shake_speed: *shake_speed_min
-  shake_duration: 10
 - chemical: wash
   dispense_count: 1
   shake_speed: 600
