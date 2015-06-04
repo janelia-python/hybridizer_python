@@ -83,8 +83,24 @@ class Hybridizer(object):
         self._msc = msc_dict[msc_dict.keys()[0]]
         self._debug_print('Found mixed_signal_controller on port ' + str(self._msc.get_port()))
 
+    def prime_system(self):
+        self._setup()
+        manifold = self._config['manifold']
+        chemicals = manifold.keys()
+        try:
+            chemicals.remove('aspirate')
+        except ValueError:
+            pass
+        try:
+            chemicals.remove('separate')
+        except ValueError:
+            pass
+        for chemical in chemicals:
+            self._prime_chemical(chemical,self._config['system_prime_count'])
+
     def run_protocol(self):
         self._setup()
+        self._set_valves_on(['separate','aspirate'])
         for chemical_info in self._config['protocol']:
             self._run_chemical(chemical_info['chemical'],
                                chemical_info['prime_count'],
@@ -95,6 +111,7 @@ class Hybridizer(object):
                                chemical_info['separate'],
                                chemical_info['aspirate'],
                                chemical_info['repeat'])
+        self._set_all_valves_off()
 
     def _setup(self):
         self._bsc.reset_device()
@@ -103,6 +120,20 @@ class Hybridizer(object):
         self._debug_print('setting up for ' + str(self._config['setup_duration']) + 's...')
         time.sleep(self._config['setup_duration'])
         self._set_all_valves_off()
+
+    def _prime_chemical(self,chemical,prime_count):
+        if prime_count > 0:
+            self._set_valve_on(chemical)
+        for i in range(prime_count):
+            self._set_valves_on(['primer','system','aspirate'])
+            self._debug_print('priming ' + chemical + ' for ' + str(self._config['prime_duration']) + 's ' + str(i+1) + '/' + str(prime_count) + '...')
+            time.sleep(self._config['prime_duration'])
+            self._set_valves_off(['system','aspirate'])
+            self._debug_print('aspirating ' + chemical + ' for ' + str(self._config['prime_aspirate_duration']) + 's ' + str(i+1) + '/' + str(prime_count) + '...')
+            time.sleep(self._config['prime_aspirate_duration'])
+            self._set_valve_off('primer')
+        if prime_count > 0:
+            self._set_valve_off(chemical)
 
     def _run_chemical(self,
                       chemical,
@@ -121,15 +152,8 @@ class Hybridizer(object):
         run_count = repeat + 1
         for run in range(run_count):
             self._debug_print('running ' + chemical + ' ' + str(run+1) + '/' + str(run_count) + '...')
+            self._prime_chemical(chemical,prime_count)
             self._set_valve_on(chemical)
-            for i in range(prime_count):
-                self._set_valves_on(['primer','system','aspirate'])
-                self._debug_print('priming ' + chemical + ' for ' + str(self._config['prime_duration']) + 's...')
-                time.sleep(self._config['prime_duration'])
-                self._set_valves_off(['system','aspirate'])
-                self._debug_print('aspirating ' + chemical + ' for ' + str(self._config['prime_aspirate_duration']) + 's...')
-                time.sleep(self._config['prime_aspirate_duration'])
-                self._set_valve_off('primer')
             self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','aspirate'])
             for i in range(dispense_count):
                 self._set_valve_on('system')
@@ -156,10 +180,10 @@ class Hybridizer(object):
                 time.sleep(post_shake_duration)
                 self._debug_print('waiting post shake for ' + str(post_shake_duration) + 's...')
             if separate:
-                self._set_valve_on('separate')
+                self._set_valve_off('separate')
                 self._debug_print('separating ' + chemical + ' for ' + str(self._config['chemical_separate_duration']) + 's...')
                 time.sleep(self._config['chemical_separate_duration'])
-                self._set_valve_off('separate')
+                self._set_valve_on('separate')
             if aspirate:
                 self._set_valve_off('aspirate')
                 self._debug_print('aspirating ' + chemical + ' from microplate for ' + str(self._config['chemical_aspirate_duration']) + 's...')

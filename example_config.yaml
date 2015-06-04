@@ -23,23 +23,22 @@ head:
   system:
     channel: 15
 manifold:
-  pbt:
-    channel: 16
   bleach:
-    channel: 17
+    channel: 16
   heptane:
-    channel: 18
+    channel: 17
   pfa:
-    channel: 19
-  wash:
-    channel: 20
-  aspirate:
-    channel: 21
-  separate:
-    channel: 22
+    channel: 18
   methanol:
-    channel: 23
+    channel: 19
+  pbt:
+    channel: 28
+  aspirate:
+    channel: 29
+  separate:
+    channel: 30
 setup_duration: 20
+system_prime_count: 2
 prime_duration: 10
 prime_aspirate_duration: 10
 load_duration: 10
