@@ -41,36 +41,29 @@ setup_duration: 20
 system_prime_count: 2
 prime_duration: 10
 prime_aspirate_duration: 10
-load_duration: 10
-dispense_duration: 5
-chemical_aspirate_duration: 20
-chemical_separate_duration: 20
+load_duration: 6
+dispense_duration: 6
+chemical_aspirate_duration: 40
+chemical_separate_duration: 40
 shake_speed_min: &shake_speed_min 200
 shake_speed_max: &shake_speed_max 3000
+aspirate_shake_speed: 200
+separate_shake_speed: 200
 protocol:
-- chemical: pbt
-  prime_count: 2
-  dispense_count: 2
-  shake_speed: 200
-  shake_duration: 10
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 0
 - chemical: bleach
   prime_count: 1
   dispense_count: 2
   shake_speed: 400
   shake_duration: 120
   post_shake_duration: 0
-  separate: false
+  separate: true
   aspirate: true
   repeat: 0
 - chemical: pbt
   prime_count: 2
   dispense_count: 2
   shake_speed: 400
-  shake_duration: 20
+  shake_duration: 10
   post_shake_duration: 0
   separate: false
   aspirate: true
