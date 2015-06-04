@@ -1,5 +1,5 @@
 chemical_aspirate_duration: 20
-dispense_duration: 10
+dispense_duration: 5
 head:
   primer:
     analog_input: 0
@@ -24,7 +24,7 @@ head:
     channel: 14
   system:
     channel: 15
-load_duration: 20
+load_duration: 10
 manifold:
   water1:
     channel: 16

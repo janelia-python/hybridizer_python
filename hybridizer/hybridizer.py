@@ -45,24 +45,20 @@ class Hybridizer(object):
     bioshake_device controls the heater/shaker.
     Example Usage:
 
-    hyb = Hybridizer(config_file_path='example_config.yaml')
+    hyb = Hybridizer('example_config.yaml')
     hyb.run_protocol()
     '''
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self,config_file_path,*args,**kwargs):
         if 'debug' in kwargs:
             self._debug = kwargs['debug']
         else:
             kwargs.update({'debug': DEBUG})
             self._debug = DEBUG
-        if 'config_file_path' in kwargs:
-            config_file_path = kwargs['config_file_path']
-            config_stream = open(config_file_path, 'r')
-            self._config = yaml.load(config_stream)
-            self._valves = self._config['head']
-            self._valves.update(self._config['manifold'])
-        else:
-            raise HybridizerError('Must provide yaml configuration file path! e.g. hyb = Hybridizer(config_file_path="example_config.yaml")')
+        config_stream = open(config_file_path, 'r')
+        self._config = yaml.load(config_stream)
+        self._valves = self._config['head']
+        self._valves.update(self._config['manifold'])
         ports = find_serial_device_ports(debug=self._debug)
         self._debug_print('Found serial devices on ports ' + str(ports))
         self._debug_print('Identifying connected devices (may take some time)...')
@@ -75,6 +71,7 @@ class Hybridizer(object):
         ports.remove(self._bsc.get_port())
         self._SHAKE_SPEED_MIN = self._bsc.get_shake_speed_min()
         self._SHAKE_SPEED_MAX = self._bsc.get_shake_speed_max()
+        self._SHAKE_DURATION_MIN = 10
         modular_devices = ModularDevices(try_ports=ports)
 
         try:
@@ -130,6 +127,8 @@ class Hybridizer(object):
             self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(shake_duration) + 's...')
             if shake_speed != 0:
                 self._bsc.shake_on(shake_speed)
+            if shake_duration < self._SHAKE_DURATION_MIN:
+                shake_duration = self._SHAKE_DURATION_MIN
             time.sleep(shake_duration)
             if shake_speed != 0:
                 self._bsc.shake_off()

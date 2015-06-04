@@ -20,6 +20,6 @@ License::
 Example Usage::
 
     from hybridizer import Hybridizer
-    hyb = Hybridizer(config_file_path='example_config.yaml')
+    hyb = Hybridizer('example_config.yaml')
     hyb.run_protocol()
 

@@ -8,7 +8,7 @@ analog signals from the cylinder hall effect sensors. The
 bioshake_device controls the heater/shaker.
 Example Usage:
 
-hyb = Hybridizer(config_file_path='example_config.yaml')
+hyb = Hybridizer('example_config.yaml')
 hyb.run_protocol()
 '''
 from hybridizer import Hybridizer, HybridizerError
