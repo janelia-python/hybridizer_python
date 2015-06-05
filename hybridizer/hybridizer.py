@@ -72,6 +72,8 @@ class Hybridizer(object):
         self._SHAKE_SPEED_MIN = self._bsc.get_shake_speed_min()
         self._SHAKE_SPEED_MAX = self._bsc.get_shake_speed_max()
         self._SHAKE_DURATION_MIN = 10
+        self._SHAKE_ATTEMPTS = 2
+        self._POST_SHAKE_OFF_DURATION = 5
         modular_devices = ModularDevices(try_ports=ports)
 
         try:
@@ -120,7 +122,7 @@ class Hybridizer(object):
         self._set_all_valves_off()
         self.protocol_end_time = time.time()
         protocol_run_time = self.protocol_end_time - self.protocol_start_time
-        self._debug_print('protocol finished! it took ' + str(protocol_run_time) + 's to run.')
+        self._debug_print('protocol finished! it took ' + str(protocol_run_time/60) + 'mins to run.')
 
     def _setup(self):
         self._bsc.reset_device()
@@ -209,7 +211,7 @@ class Hybridizer(object):
         if shake_speed != 0:
             shook = False
             shake_try = 0
-            while (not shook) and (shake_try < self._config['shake_attempts']):
+            while (not shook) and (shake_try < self._SHAKE_ATTEMPTS):
                 shake_try += 1
                 try:
                     self._bsc.shake_on(shake_speed)
@@ -219,20 +221,13 @@ class Hybridizer(object):
                     self._debug_print('BioshakeError! Resetting for ' + str(self._config['setup_duration']) + 's and trying again...')
                     self._bsc.reset_device()
                     time.sleep(self._config['setup_duration'])
-        sleep_count = 0
-        shake_state = self._bsc.get_shake_state()
-        while (shake_state['value'] is not 0) and (sleep_count < 10):
-            time.sleep(1)
-            sleep_count += 1
-            shake_state = self._bsc.get_shake_state()
-        self._debug_print('acceleration time = ' + str(sleep_count) + 's')
         return shake_speed
 
     def _shake_off(self,shake_speed):
         if shake_speed != 0:
             shook = False
             shake_try = 0
-            while (not shook) and (shake_try < self._config['shake_attempts']):
+            while (not shook) and (shake_try < self._SHAKE_ATTEMPTS):
                 shake_try += 1
                 try:
                     self._bsc.shake_off()
@@ -242,13 +237,7 @@ class Hybridizer(object):
                     self._debug_print('BioshakeError! Resetting for ' + str(self._config['setup_duration']) + 's and trying again...')
                     self._bsc.reset_device()
                     time.sleep(self._config['setup_duration'])
-        sleep_count = 0
-        shake_state = self._bsc.get_shake_state()
-        while (shake_state['value'] is not 3) and (sleep_count < 10):
-            time.sleep(1)
-            sleep_count += 1
-            shake_state = self._bsc.get_shake_state()
-        self._debug_print('deceleration time = ' + str(sleep_count) + 's')
+            time.sleep(self._POST_SHAKE_OFF_DURATION)
 
     def _debug_print(self, *args):
         if self._debug:
