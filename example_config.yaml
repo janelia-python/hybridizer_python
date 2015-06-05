@@ -38,9 +38,9 @@ manifold:
   separate:
     channel: 30
 setup_duration: 20
-system_prime_count: 2
+system_prime_count: 1
 prime_duration: 10
-prime_aspirate_duration: 10
+prime_aspirate_duration: 15
 load_duration: 6
 dispense_duration: 6
 chemical_aspirate_duration: 40
@@ -49,25 +49,26 @@ shake_speed_min: &shake_speed_min 200
 shake_speed_max: &shake_speed_max 3000
 aspirate_shake_speed: 200
 separate_shake_speed: 200
+shake_attempts: 3
 protocol:
 - chemical: bleach
   prime_count: 1
   dispense_count: 2
   shake_speed: 400
-  shake_duration: 120
+  shake_duration: 60
   post_shake_duration: 0
   separate: true
   aspirate: true
-  repeat: 0
+  repeat: 1
 - chemical: pbt
   prime_count: 2
   dispense_count: 2
   shake_speed: 400
   shake_duration: 10
   post_shake_duration: 0
-  separate: false
+  separate: true
   aspirate: true
-  repeat: 6
+  repeat: 4
 - chemical: heptane
   prime_count: 2
   dispense_count: 1
@@ -83,7 +84,7 @@ protocol:
   shake_speed: 500
   shake_duration: 1200
   post_shake_duration: 0
-  separate: false
+  separate: true
   aspirate: true
   repeat: 0
 - chemical: heptane
@@ -98,7 +99,25 @@ protocol:
 - chemical: methanol
   prime_count: 2
   dispense_count: 1
-  shake_speed: 1000
+  shake_speed: 1500
+  shake_duration: 60
+  post_shake_duration: 0
+  separate: true
+  aspirate: true
+  repeat: 0
+- chemical: heptane
+  prime_count: 2
+  dispense_count: 1
+  shake_speed: 0
+  shake_duration: 0
+  post_shake_duration: 0
+  separate: false
+  aspirate: false
+  repeat: 0
+- chemical: methanol
+  prime_count: 2
+  dispense_count: 1
+  shake_speed: 1500
   shake_duration: 60
   post_shake_duration: 10
   separate: false
@@ -137,6 +156,6 @@ protocol:
   shake_speed: 400
   shake_duration: 30
   post_shake_duration: 0
-  separate: false
+  separate: true
   aspirate: true
   repeat: 2

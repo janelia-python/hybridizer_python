@@ -85,6 +85,7 @@ class Hybridizer(object):
 
     def prime_system(self):
         self._setup()
+        self._debug_print('priming system...')
         manifold = self._config['manifold']
         chemicals = manifold.keys()
         try:
@@ -99,9 +100,12 @@ class Hybridizer(object):
         for chemical in chemicals:
             self._prime_chemical(chemical,self._config['system_prime_count'])
         self._set_all_valves_off()
+        self._debug_print('priming finished!')
 
     def run_protocol(self):
         self._setup()
+        self.protocol_start_time = time.time()
+        self._debug_print('running protocol...')
         self._set_valves_on(['separate','aspirate'])
         for chemical_info in self._config['protocol']:
             self._run_chemical(chemical_info['chemical'],
@@ -114,6 +118,9 @@ class Hybridizer(object):
                                chemical_info['aspirate'],
                                chemical_info['repeat'])
         self._set_all_valves_off()
+        self.protocol_end_time = time.time()
+        protocol_run_time = self.protocol_end_time - self.protocol_start_time
+        self._debug_print('protocol finished! it took ' + str(protocol_run_time) + 's to run.')
 
     def _setup(self):
         self._bsc.reset_device()
@@ -122,6 +129,7 @@ class Hybridizer(object):
         self._debug_print('setting up for ' + str(self._config['setup_duration']) + 's...')
         time.sleep(self._config['setup_duration'])
         self._set_all_valves_off()
+        self._debug_print('setup finished!')
 
     def _prime_chemical(self,chemical,prime_count):
         if prime_count > 0:
@@ -199,12 +207,48 @@ class Hybridizer(object):
         elif shake_speed > self._SHAKE_SPEED_MAX:
             shake_speed = self._SHAKE_SPEED_MAX
         if shake_speed != 0:
-            self._bsc.shake_on(shake_speed)
+            shook = False
+            shake_try = 0
+            while (not shook) and (shake_try < self._config['shake_attempts']):
+                shake_try += 1
+                try:
+                    self._bsc.shake_on(shake_speed)
+                    shook = True
+                except:
+                    self._debug_print('bioshake_device.get_error_list(): ' + str(self._bsc.get_error_list()))
+                    self._debug_print('BioshakeError! Resetting for ' + str(self._config['setup_duration']) + 's and trying again...')
+                    self._bsc.reset_device()
+                    time.sleep(self._config['setup_duration'])
+        sleep_count = 0
+        shake_state = self._bsc.get_shake_state()
+        while (shake_state['value'] is not 0) and (sleep_count < 10):
+            time.sleep(1)
+            sleep_count += 1
+            shake_state = self._bsc.get_shake_state()
+        self._debug_print('acceleration time = ' + str(sleep_count) + 's')
         return shake_speed
 
     def _shake_off(self,shake_speed):
         if shake_speed != 0:
-            self._bsc.shake_off()
+            shook = False
+            shake_try = 0
+            while (not shook) and (shake_try < self._config['shake_attempts']):
+                shake_try += 1
+                try:
+                    self._bsc.shake_off()
+                    shook = True
+                except:
+                    self._debug_print('bioshake_device.get_error_list(): ' + str(self._bsc.get_error_list()))
+                    self._debug_print('BioshakeError! Resetting for ' + str(self._config['setup_duration']) + 's and trying again...')
+                    self._bsc.reset_device()
+                    time.sleep(self._config['setup_duration'])
+        sleep_count = 0
+        shake_state = self._bsc.get_shake_state()
+        while (shake_state['value'] is not 3) and (sleep_count < 10):
+            time.sleep(1)
+            sleep_count += 1
+            shake_state = self._bsc.get_shake_state()
+        self._debug_print('deceleration time = ' + str(sleep_count) + 's')
 
     def _debug_print(self, *args):
         if self._debug:
