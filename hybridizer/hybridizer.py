@@ -168,6 +168,14 @@ class Hybridizer(object):
             self._set_valve_on(chemical)
             self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','aspirate'])
             for i in range(dispense_count):
+                if i > 0:
+                    dispense_shake_duration = self._shake_on(self._config['inter_dispense_shake_duration'])
+                    if dispense_shake_duration < self._SHAKE_DURATION_MIN:
+                        dispense_shake_duration = self._SHAKE_DURATION_MIN
+                    dispense_shake_speed = self._shake_on(self._config['inter_dispense_shake_speed'])
+                    self._debug_print('shaking at ' + str(dispense_shake_speed) + 'rpm for ' + str(dispense_shake_duration) + 's...')
+                    time.sleep(dispense_shake_duration)
+                    self._shake_off(dispense_shake_speed)
                 self._set_valve_on('system')
                 self._debug_print('loading ' + chemical + ' into syringes for ' + str(self._config['load_duration']) + 's ' + str(i+1) + '/' + str(dispense_count) + '...')
                 time.sleep(self._config['load_duration'])
@@ -176,15 +184,15 @@ class Hybridizer(object):
                 time.sleep(self._config['dispense_duration'])
             self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
             if not ((shake_duration is None) or (shake_duration <= 0)):
-                shake_speed = self._shake_on(shake_speed)
-                self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(shake_duration) + 's...')
                 if shake_duration < self._SHAKE_DURATION_MIN:
                     shake_duration = self._SHAKE_DURATION_MIN
+                shake_speed = self._shake_on(shake_speed)
+                self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(shake_duration) + 's...')
                 time.sleep(shake_duration)
                 self._shake_off(shake_speed)
             if (post_shake_duration > 0):
-                time.sleep(post_shake_duration)
                 self._debug_print('waiting post shake for ' + str(post_shake_duration) + 's...')
+                time.sleep(post_shake_duration)
             if separate:
                 shake_speed = self._shake_on(self._config['aspirate_shake_speed'])
                 self._set_valve_off('separate')

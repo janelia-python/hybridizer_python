@@ -49,6 +49,8 @@ shake_speed_min: &shake_speed_min 200
 shake_speed_max: &shake_speed_max 3000
 aspirate_shake_speed: 200
 separate_shake_speed: 200
+inter_dispense_shake_speed: 400
+inter_dispense_shake_duration: 10
 protocol:
 - chemical: bleach
   prime_count: 1
