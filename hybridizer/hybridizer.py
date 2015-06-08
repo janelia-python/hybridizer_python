@@ -185,28 +185,28 @@ class Hybridizer(object):
             self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
             if not ((shake_duration is None) or (shake_duration <= 0)):
                 if shake_duration < self._SHAKE_DURATION_MIN:
-                    shake_duration = self._SHAKE_DURATION_MIN
-                shake_speed = self._shake_on(shake_speed)
-                self._debug_print('shaking at ' + str(shake_speed) + 'rpm for ' + str(shake_duration) + 's...')
-                time.sleep(shake_duration)
-                self._shake_off(shake_speed)
+                    actual_shake_duration = self._SHAKE_DURATION_MIN
+                actual_shake_speed = self._shake_on(shake_speed)
+                self._debug_print('shaking at ' + str(actual_shake_speed) + 'rpm for ' + str(actual_shake_duration) + 's...')
+                time.sleep(actual_shake_duration)
+                self._shake_off(actual_shake_speed)
             if (post_shake_duration > 0):
                 self._debug_print('waiting post shake for ' + str(post_shake_duration) + 's...')
                 time.sleep(post_shake_duration)
             if separate:
-                shake_speed = self._shake_on(self._config['aspirate_shake_speed'])
+                separate_shake_speed = self._shake_on(self._config['separate_shake_speed'])
                 self._set_valve_off('separate')
                 self._debug_print('separating ' + chemical + ' for ' + str(self._config['chemical_separate_duration']) + 's...')
                 time.sleep(self._config['chemical_separate_duration'])
                 self._set_valve_on('separate')
-                self._shake_off(shake_speed)
+                self._shake_off(separate_shake_speed)
             if aspirate:
-                shake_speed = self._shake_on(self._config['separate_shake_speed'])
+                aspirate_shake_speed = self._shake_on(self._config['aspirate_shake_speed'])
                 self._set_valve_off('aspirate')
                 self._debug_print('aspirating ' + chemical + ' from microplate for ' + str(self._config['chemical_aspirate_duration']) + 's...')
                 time.sleep(self._config['chemical_aspirate_duration'])
                 self._set_valve_on('aspirate')
-                self._shake_off(shake_speed)
+                self._shake_off(aspirate_shake_speed)
             self._set_valve_off(chemical)
             self._debug_print(chemical + ' finished!')
             self._debug_print()
