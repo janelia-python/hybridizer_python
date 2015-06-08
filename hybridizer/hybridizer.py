@@ -122,7 +122,7 @@ class Hybridizer(object):
         self._set_all_valves_off()
         self.protocol_end_time = time.time()
         protocol_run_time = self.protocol_end_time - self.protocol_start_time
-        self._debug_print('protocol finished! it took ' + str(protocol_run_time/60) + 'mins to run.')
+        self._debug_print('protocol finished! it took ' + str(round(protocol_run_time/60)) + ' mins to run.')
 
     def _setup(self):
         self._bsc.reset_device()
