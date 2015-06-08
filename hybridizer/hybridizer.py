@@ -169,7 +169,7 @@ class Hybridizer(object):
             self._set_valves_on(['quad1','quad2','quad3','quad4','quad5','quad6','aspirate'])
             for i in range(dispense_count):
                 if i > 0:
-                    dispense_shake_duration = self._shake_on(self._config['inter_dispense_shake_duration'])
+                    dispense_shake_duration = self._config['inter_dispense_shake_duration']
                     if dispense_shake_duration < self._SHAKE_DURATION_MIN:
                         dispense_shake_duration = self._SHAKE_DURATION_MIN
                     dispense_shake_speed = self._shake_on(self._config['inter_dispense_shake_speed'])
