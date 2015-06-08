@@ -82,7 +82,7 @@ protocol:
 - chemical: pfa
   prime_count: 1
   dispense_count: 1
-  shake_speed: 500
+  shake_speed: 700
   shake_duration: 1200
   post_shake_duration: 0
   separate: true
@@ -90,6 +90,15 @@ protocol:
   repeat: 0
 - chemical: heptane
   prime_count: 1
+  dispense_count: 1
+  shake_speed: 400
+  shake_duration: 10
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 0
+- chemical: heptane
+  prime_count: 0
   dispense_count: 1
   shake_speed: 0
   shake_duration: 0
@@ -168,4 +177,4 @@ protocol:
   post_shake_duration: 0
   separate: true
   aspirate: true
-  repeat: 2
+  repeat: 1
