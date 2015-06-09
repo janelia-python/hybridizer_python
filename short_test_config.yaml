@@ -52,35 +52,8 @@ separate_shake_speed: 200
 inter_dispense_shake_speed: 400
 inter_dispense_shake_duration: 10
 protocol:
-- chemical: bleach
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 400
-  shake_duration: 30
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 1
-- chemical: pbt
-  prime_count: 0
-  dispense_count: 1
-  shake_speed: 400
-  shake_duration: 10
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 4
 - chemical: heptane
   prime_count: 1
-  dispense_count: 1
-  shake_speed: 400
-  shake_duration: 10
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 1
-- chemical: heptane
-  prime_count: 0
   dispense_count: 1
   shake_speed: 0
   shake_duration: 0
@@ -124,31 +97,4 @@ protocol:
   separate: false
   aspirate: true
   repeat: 2
-- chemical: pfa
-  prime_count: 0
-  dispense_count: 1
-  shake_speed: 400
-  shake_duration: 20
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 0
-- chemical: pfa
-  prime_count: 0
-  dispense_count: 1
-  shake_speed: 400
-  shake_duration: 1200
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 0
-- chemical: pbt
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 400
-  shake_duration: 30
-  post_shake_duration: 0
-  separate: false
-  aspirate: true
-  repeat: 4
 
