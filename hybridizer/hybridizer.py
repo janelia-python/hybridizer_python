@@ -184,6 +184,7 @@ class Hybridizer(object):
                 time.sleep(self._config['dispense_duration'])
             self._set_valves_off(['quad1','quad2','quad3','quad4','quad5','quad6'])
             if not ((shake_duration is None) or (shake_duration <= 0)):
+                actual_shake_duration = shake_duration
                 if shake_duration < self._SHAKE_DURATION_MIN:
                     actual_shake_duration = self._SHAKE_DURATION_MIN
                 actual_shake_speed = self._shake_on(shake_speed)
