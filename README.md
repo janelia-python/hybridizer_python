@@ -21,13 +21,15 @@ License:
 
 [Example Config File](./example_config.yaml)
 
-Open a terminal and type:
+Open a terminal and enter
 
 ```shell
 source ~/virtualenvs/hybridizer/bin/activate
 cd ~/git/hybridizer_python
 ipython
 ```
+
+In ipython enter:
 
 ```python
 from hybridizer import Hybridizer
