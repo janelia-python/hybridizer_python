@@ -48,10 +48,15 @@ hyb.run_protocol()
 Open a terminal and enter:
 
 ```shell
+mkdir ~/git
+cd ~/git
+git clone https://github.com/JaneliaSciComp/hybridizer_python.git
 mkdir -p ~/virtualenvs/hybridizer
 virtualenv ~/virtualenvs/hybridizer
 source ~/virtualenvs/hybridizer/bin/activate
-pip install hybridizer
+pip install ipython
+pip install modular_device
+pip install bioshake_device
 ```
 
 On linux, you may need to add yourself to the group 'dialout' in order
@@ -73,5 +78,7 @@ Open a terminal and enter:
 ```shell
 virtualenv C:\virtualenvs\hybridizer
 C:\virtualenvs\hybridizer\Scripts\activate
-pip install hybridizer
+pip install ipython
+pip install modular_device
+pip install bioshake_device
 ```
