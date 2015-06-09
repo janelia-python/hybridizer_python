@@ -39,6 +39,14 @@ hyb.run_protocol()
 
 ##Installation
 
+####Debian-based Linux Install Dependencies
+
+Open a terminal and enter:
+
+```shell
+sudo apt-get install git python-virtualenv -y
+```
+
 ###Linux and Mac OS X
 
 [Setup Python for Linux](./PYTHON_SETUP_LINUX.md)
