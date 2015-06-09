@@ -56,10 +56,10 @@ protocol:
   prime_count: 1
   dispense_count: 1
   shake_speed: 400
-  shake_duration: 60
+  shake_duration: 45
   post_shake_duration: 0
   separate: true
-  aspirate: true
+  aspirate: false
   repeat: 1
 - chemical: pbt
   prime_count: 0
@@ -73,24 +73,6 @@ protocol:
 - chemical: heptane
   prime_count: 1
   dispense_count: 1
-  shake_speed: 0
-  shake_duration: 0
-  post_shake_duration: 0
-  separate: false
-  aspirate: false
-  repeat: 0
-- chemical: pfa
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 700
-  shake_duration: 1200
-  post_shake_duration: 0
-  separate: true
-  aspirate: true
-  repeat: 0
-- chemical: heptane
-  prime_count: 1
-  dispense_count: 1
   shake_speed: 400
   shake_duration: 10
   post_shake_duration: 0
@@ -111,34 +93,7 @@ protocol:
   dispense_count: 1
   shake_speed: 1500
   shake_duration: 60
-  post_shake_duration: 0
-  separate: true
-  aspirate: true
-  repeat: 0
-- chemical: heptane
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 0
-  shake_duration: 0
-  post_shake_duration: 0
-  separate: false
-  aspirate: false
-  repeat: 0
-- chemical: methanol
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 1500
-  shake_duration: 60
-  post_shake_duration: 10
-  separate: false
-  aspirate: false
-  repeat: 0
-- chemical: methanol
-  prime_count: 0
-  dispense_count: 1
-  shake_speed: 0
-  shake_duration: 0
-  post_shake_duration: 0
+  post_shake_duration: 30
   separate: true
   aspirate: false
   repeat: 0
@@ -147,7 +102,16 @@ protocol:
   dispense_count: 1
   shake_speed: 0
   shake_duration: 0
-  post_shake_duration: 0
+  post_shake_duration: 30
+  separate: true
+  aspirate: false
+  repeat: 0
+- chemical: methanol
+  prime_count: 0
+  dispense_count: 1
+  shake_speed: 0
+  shake_duration: 0
+  post_shake_duration: 30
   separate: true
   aspirate: false
   repeat: 1
@@ -156,7 +120,7 @@ protocol:
   dispense_count: 1
   shake_speed: 0
   shake_duration: 0
-  post_shake_duration: 0
+  post_shake_duration: 30
   separate: true
   aspirate: false
   repeat: 1
@@ -165,7 +129,7 @@ protocol:
   dispense_count: 1
   shake_speed: 0
   shake_duration: 0
-  post_shake_duration: 0
+  post_shake_duration: 30
   separate: true
   aspirate: true
   repeat: 0
@@ -177,4 +141,32 @@ protocol:
   post_shake_duration: 0
   separate: true
   aspirate: true
-  repeat: 1
+  repeat: 2
+- chemical: pfa
+  prime_count: 0
+  dispense_count: 1
+  shake_speed: 400
+  shake_duration: 20
+  post_shake_duration: 0
+  separate: true
+  aspirate: true
+  repeat: 0
+- chemical: pfa
+  prime_count: 0
+  dispense_count: 1
+  shake_speed: 400
+  shake_duration: 1200
+  post_shake_duration: 0
+  separate: true
+  aspirate: true
+  repeat: 0
+- chemical: pbt
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 400
+  shake_duration: 30
+  post_shake_duration: 0
+  separate: true
+  aspirate: true
+  repeat: 4
+
