@@ -65,6 +65,7 @@ source ~/virtualenvs/hybridizer/bin/activate
 pip install ipython
 pip install modular_device
 pip install bioshake_device
+pip install pyyaml
 ```
 
 On linux, you may need to add yourself to the group 'dialout' in order
@@ -89,4 +90,5 @@ C:\virtualenvs\hybridizer\Scripts\activate
 pip install ipython
 pip install modular_device
 pip install bioshake_device
+pip install pyyaml
 ```
