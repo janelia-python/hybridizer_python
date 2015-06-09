@@ -21,7 +21,7 @@ License:
 
 [Example Config File](./example_config.yaml)
 
-Open a terminal and enter
+Open a terminal and enter:
 
 ```shell
 source ~/virtualenvs/hybridizer/bin/activate
@@ -29,7 +29,7 @@ cd ~/git/hybridizer_python
 ipython
 ```
 
-In ipython enter:
+In iPython enter:
 
 ```python
 from hybridizer import Hybridizer
@@ -45,6 +45,8 @@ hyb.run_protocol()
 
 [Setup Python for Mac OS X](./PYTHON_SETUP_MAC_OS_X.md)
 
+Open a terminal and enter:
+
 ```shell
 mkdir -p ~/virtualenvs/hybridizer
 virtualenv ~/virtualenvs/hybridizer
@@ -55,6 +57,8 @@ pip install hybridizer
 On linux, you may need to add yourself to the group 'dialout' in order
 to have write permissions on the USB port:
 
+Open a terminal and enter:
+
 ```shell
 sudo usermod -aG dialout $USER
 sudo reboot
@@ -63,6 +67,8 @@ sudo reboot
 ###Windows
 
 [Setup Python for Windows](./PYTHON_SETUP_WINDOWS.md)
+
+Open a terminal and enter:
 
 ```shell
 virtualenv C:\virtualenvs\hybridizer
