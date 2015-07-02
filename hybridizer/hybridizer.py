@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 from serial_device2 import find_serial_device_ports
 from modular_device import ModularDevices
-from bioshake_device import BioshakeDevice
+from bioshake_device import BioshakeDevice, BioshakeError
 from exceptions import Exception
 import os
 import time
@@ -118,6 +118,7 @@ class Hybridizer(object):
                                chemical_info['post_shake_duration'],
                                chemical_info['separate'],
                                chemical_info['aspirate'],
+                               chemical_info['temperature'],
                                chemical_info['repeat'])
         self._set_all_valves_off()
         self.protocol_end_time = time.time()
@@ -156,12 +157,23 @@ class Hybridizer(object):
                       post_shake_duration=0,
                       separate=False,
                       aspirate=True,
+                      temp_target=None,
                       repeat=0):
         if (chemical not in self._valves):
             raise HybridizerError(chemical + ' is not listed as part of the manifold in the config file!')
         if repeat < 0:
             repeat = 0
         run_count = repeat + 1
+        if temp_target is not None:
+            self._debug_print('turning on temperature control for ' + chemical + '...')
+            self._bsc.temp_on(temp_target)
+            temp_actual = self._bsc.get_temp_actual()
+            self._debug_print('actual temperature: ' + str(temp_actual) + ', target temperature: ' + str(temp_target))
+            while abs(temp_target - temp_actual) > 0.5:
+                time.sleep(1)
+                temp_actual = self._bsc.get_temp_actual()
+                self._debug_print('actual temperature: ' + str(temp_actual) + ', target temperature: ' + str(temp_target))
+            self._debug_print()
         self._prime_chemical(chemical,prime_count)
         for run in range(run_count):
             self._debug_print('running ' + chemical + ' ' + str(run+1) + '/' + str(run_count) + '...')
@@ -211,6 +223,13 @@ class Hybridizer(object):
             self._set_valve_off(chemical)
             self._debug_print(chemical + ' finished!')
             self._debug_print()
+        if temp_target is not None:
+            self._debug_print('turning off temperature control for ' + chemical + '...')
+            try:
+                self._bsc.temp_off()
+            except BioshakeError:
+                pass
+            self._debug_print()
 
     def _shake_on(self,shake_speed):
         if (shake_speed is None) or (shake_speed < self._SHAKE_SPEED_MIN):
@@ -225,7 +244,7 @@ class Hybridizer(object):
                 try:
                     self._bsc.shake_on(shake_speed)
                     shook = True
-                except:
+                except BioshakeError:
                     self._debug_print('bioshake_device.get_error_list(): ' + str(self._bsc.get_error_list()))
                     self._debug_print('BioshakeError! Resetting for ' + str(self._config['setup_duration']) + 's and trying again...')
                     self._bsc.reset_device()
@@ -241,7 +260,7 @@ class Hybridizer(object):
                 try:
                     self._bsc.shake_off()
                     shook = True
-                except:
+                except BioshakeError:
                     self._debug_print('bioshake_device.get_error_list(): ' + str(self._bsc.get_error_list()))
                     self._debug_print('BioshakeError! Resetting for ' + str(self._config['setup_duration']) + 's and trying again...')
                     self._bsc.reset_device()

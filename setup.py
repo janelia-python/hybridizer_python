@@ -68,7 +68,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=['modular_device',
-                      'bioshake_device',
+                      'bioshake_device >= 1.6',
                       'pyyaml',
     ],
 
