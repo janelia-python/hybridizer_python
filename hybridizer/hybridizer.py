@@ -110,16 +110,53 @@ class Hybridizer(object):
         self._debug_print('running protocol...')
         self._set_valves_on(['separate','aspirate'])
         for chemical_info in self._config['protocol']:
-            self._run_chemical(chemical_info['chemical'],
-                               chemical_info['prime_count'],
-                               chemical_info['dispense_count'],
-                               chemical_info['shake_speed'],
-                               chemical_info['shake_duration'],
-                               chemical_info['post_shake_duration'],
-                               chemical_info['separate'],
-                               chemical_info['aspirate'],
-                               chemical_info['temperature'],
-                               chemical_info['repeat'])
+            chemical = chemical_info['chemical']
+            try:
+                prime_count = chemical_info['prime_count']
+            except KeyError:
+                prime_count = 1
+            try:
+                dispense_count = chemical_info['dispense_count']
+            except KeyError:
+                dispense_count = 1
+            try:
+                shake_speed = chemical_info['shake_speed']
+            except KeyError:
+                shake_speed = None
+            try:
+                shake_duration = chemical_info['shake_duration']
+            except KeyError:
+                shake_duration = None
+            try:
+                post_shake_duration = chemical_info['post_shake_duration']
+            except KeyError:
+                post_shake_duration = 0
+            try:
+                separate = chemical_info['separate']
+            except KeyError:
+                separate = False
+            try:
+                aspirate = chemical_info['aspirate']
+            except KeyError:
+                aspirate = True
+            try:
+                temperature = chemical_info['temperature']
+            except KeyError:
+                temperature = None
+            try:
+                repeat = chemical_info['repeat']
+            except KeyError:
+                repeat = 0
+            self._run_chemical(chemical,
+                               prime_count,
+                               dispense_count,
+                               shake_speed,
+                               shake_duration,
+                               post_shake_duration,
+                               separate,
+                               aspirate,
+                               temperature,
+                               repeat)
         self._set_all_valves_off()
         self.protocol_end_time = time.time()
         protocol_run_time = self.protocol_end_time - self.protocol_start_time
