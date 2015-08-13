@@ -7,6 +7,10 @@ import os
 import time
 import yaml
 import argparse
+from numpy.polynomial.polynomial import polyfit,polyadd,Polynomial
+import csv
+import copy
+import numpy
 
 try:
     from pkg_resources import get_distribution, DistributionNotFound
@@ -45,18 +49,25 @@ class Hybridizer(object):
     bioshake_device controls the heater/shaker.
     Example Usage:
 
-    hyb = Hybridizer('example_config.yaml')
+    hyb = Hybridizer('example_calibration.yaml','example_config.yaml')
     hyb.run_protocol()
     '''
 
-    def __init__(self,config_file_path,*args,**kwargs):
+    def __init__(self,
+                 calibration_file_path,
+                 config_file_path,
+                 mixed_signal_controller=True,
+                 bioshake_device=True,
+                 *args,**kwargs):
         if 'debug' in kwargs:
             self._debug = kwargs['debug']
         else:
             kwargs.update({'debug': DEBUG})
             self._debug = DEBUG
-        config_stream = open(config_file_path, 'r')
-        self._config = yaml.load(config_stream)
+        with open(calibration_file_path,'r') as calibration_stream:
+            self._calibration = yaml.load(calibration_stream)
+        with open(config_file_path,'r') as config_stream:
+            self._config = yaml.load(config_stream)
         self._valves = self._config['head']
         self._valves.update(self._config['manifold'])
         ports = find_serial_device_ports(debug=self._debug)

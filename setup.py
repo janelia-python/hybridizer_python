@@ -70,6 +70,7 @@ setup(
     install_requires=['modular_device',
                       'bioshake_device >= 1.6',
                       'pyyaml',
+                      'numpy',
     ],
 
     # If there are data files included in your packages that need to be
