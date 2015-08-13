@@ -25,7 +25,6 @@ Open a terminal and enter:
 
 ```shell
 source ~/virtualenvs/hybridizer/bin/activate
-cd ~/git/hybridizer_python
 ipython
 ```
 
@@ -63,9 +62,7 @@ mkdir -p ~/virtualenvs/hybridizer
 virtualenv ~/virtualenvs/hybridizer
 source ~/virtualenvs/hybridizer/bin/activate
 pip install ipython
-pip install modular_device
-pip install bioshake_device
-pip install pyyaml
+pip install hybridizer
 ```
 
 On linux, you may need to add yourself to the group 'dialout' in order
@@ -88,7 +85,5 @@ Open a terminal and enter:
 virtualenv C:\virtualenvs\hybridizer
 C:\virtualenvs\hybridizer\Scripts\activate
 pip install ipython
-pip install modular_device
-pip install bioshake_device
-pip install pyyaml
+pip install hybridizier
 ```
