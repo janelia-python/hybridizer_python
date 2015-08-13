@@ -31,6 +31,12 @@ manifold:
     channel: 18
   methanol:
     channel: 19
+  block:
+    channel: 20
+  primary:
+    channel: 21
+  secondary:
+    channel: 24
   pbt:
     channel: 28
   aspirate:
@@ -52,49 +58,12 @@ separate_shake_speed: 200
 inter_dispense_shake_speed: 400
 inter_dispense_shake_duration: 10
 protocol:
-- chemical: heptane
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 0
-  shake_duration: 0
-  post_shake_duration: 10
-  separate: false
-  aspirate: false
-  repeat: 0
-- chemical: methanol
-  prime_count: 1
-  dispense_count: 1
-  shake_speed: 1500
-  shake_duration: 15
-  post_shake_duration: 30
-  separate: true
-  aspirate: false
-  repeat: 0
-- chemical: methanol
-  prime_count: 0
-  dispense_count: 1
-  shake_speed: 0
-  shake_duration: 0
-  post_shake_duration: 30
-  separate: true
-  aspirate: false
-  repeat: 3
-- chemical: methanol
-  prime_count: 0
-  dispense_count: 1
+- chemical: secondary
+  prime_count: 2
+  dispense_count: 0
   shake_speed: 0
   shake_duration: 0
   post_shake_duration: 0
-  separate: true
-  aspirate: true
-  repeat: 1
-- chemical: pbt
-  prime_count: 0
-  dispense_count: 1
-  shake_speed: 100
-  shake_duration: 30
-  post_shake_duration: 0
   separate: false
-  aspirate: true
-  repeat: 2
-
+  aspirate: false
+  repeat: 0

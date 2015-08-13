@@ -31,6 +31,12 @@ manifold:
     channel: 18
   methanol:
     channel: 19
+  block:
+    channel: 20
+  primary:
+    channel: 21
+  secondary:
+    channel: 22
   pbt:
     channel: 28
   aspirate:
@@ -55,8 +61,8 @@ protocol:
 - chemical: heptane
   prime_count: 1
   dispense_count: 1
-  shake_speed: 0
-  shake_duration: 0
+  shake_speed: 200
+  shake_duration: 120
   post_shake_duration: 10
   separate: false
   aspirate: false
@@ -66,16 +72,16 @@ protocol:
   dispense_count: 1
   shake_speed: 1500
   shake_duration: 15
-  post_shake_duration: 30
+  post_shake_duration: 20
   separate: true
-  aspirate: false
+  aspirate: true
   repeat: 0
 - chemical: methanol
   prime_count: 0
   dispense_count: 1
   shake_speed: 0
   shake_duration: 0
-  post_shake_duration: 30
+  post_shake_duration: 20
   separate: true
   aspirate: false
   repeat: 3
@@ -87,9 +93,9 @@ protocol:
   post_shake_duration: 0
   separate: true
   aspirate: true
-  repeat: 1
+  repeat: 0
 - chemical: pbt
-  prime_count: 0
+  prime_count: 1
   dispense_count: 1
   shake_speed: 100
   shake_duration: 30
@@ -97,4 +103,75 @@ protocol:
   separate: false
   aspirate: true
   repeat: 2
-
+- chemical: pfa
+  prime_count: 0
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 1200
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 0
+- chemical: pbt
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 180
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 7
+- chemical: block
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 600
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 1
+- chemical: primary
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 9000
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 0
+- chemical: pbt
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 360
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 7
+- chemical: secondary
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 7200
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 0
+- chemical: pbt
+  prime_count: 1
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 360
+  post_shake_duration: 0
+  separate: false
+  aspirate: true
+  repeat: 7
+- chemical: pbt
+  prime_count: 0
+  dispense_count: 1
+  shake_speed: 200
+  shake_duration: 360
+  post_shake_duration: 0
+  separate: false
+  aspirate: false
+  repeat: 0
