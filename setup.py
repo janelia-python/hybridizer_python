@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/JaneliaSciComp/hybridizer_python',
+    url='https://github.com/janelia-pypi/hybridizer_python',
 
     # Author details
     author='Peter Polidoro',
@@ -68,7 +68,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=['modular_device',
-                      'bioshake_device',
+                      'bioshake_device >= 1.6',
                       'pyyaml',
     ],
 
