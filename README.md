@@ -25,15 +25,7 @@ Open a terminal and enter:
 
 ```shell
 source ~/virtualenvs/hybridizer/bin/activate
-ipython
-```
-
-In iPython enter:
-
-```python
-from hybridizer import Hybridizer
-hyb = Hybridizer('example_config.yaml')
-hyb.run_protocol()
+hybridzer example_calibration.yaml example_config.yaml
 ```
 
 ##Installation
@@ -43,7 +35,7 @@ hyb.run_protocol()
 Open a terminal and enter:
 
 ```shell
-sudo apt-get install git python-virtualenv -y
+sudo apt-get install git python-pip python-virtualenv python-dev build-essential -y
 ```
 
 ###Linux and Mac OS X
@@ -57,11 +49,16 @@ Open a terminal and enter:
 ```shell
 mkdir ~/git
 cd ~/git
-git clone https://github.com/JaneliaSciComp/hybridizer_python.git
-mkdir -p ~/virtualenvs/hybridizer
-virtualenv ~/virtualenvs/hybridizer
+git clone https://github.com/janelia-idf/hybridizer_config.git
+git clone https://github.com/janelia-idf/hybridizer.git
+cd hybridizer
+git submodule init
+git submodule update
+cd ~
+mkdir ~/virtualenvs
+cd ~/virtualenvs
+virtualenv hybridizer
 source ~/virtualenvs/hybridizer/bin/activate
-pip install ipython
 pip install hybridizer
 ```
 
