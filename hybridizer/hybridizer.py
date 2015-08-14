@@ -379,7 +379,7 @@ class Hybridizer(object):
         adc_values_filtered = None
         if self._using_msc:
             adc_values = None
-            for sample_n in range(self._adc_sample_count):
+            for sample_n in range(self._config['adc_sample_count']):
                 sample_values = self._msc.get_analog_inputs_filtered()
                 if adc_values is None:
                     adc_values = numpy.array([sample_values],int)
