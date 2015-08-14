@@ -381,12 +381,15 @@ class Hybridizer(object):
         if self._using_msc:
             adc_values = None
             for sample_n in range(self._config['adc_sample_count']):
-                sample_values = self._msc.get_analog_inputs_filtered()
-                if adc_values is None:
-                    adc_values = numpy.array([sample_values],int)
-                else:
-                    adc_values = numpy.append(adc_values,[sample_values],axis=0)
-                time.sleep(0.1)
+                try:
+                    sample_values = self._msc.get_analog_inputs_filtered()
+                    if adc_values is None:
+                        adc_values = numpy.array([sample_values],int)
+                    else:
+                        adc_values = numpy.append(adc_values,[sample_values],axis=0)
+                    time.sleep(0.1)
+                except IOError:
+                    pass
             adc_values_filtered = numpy.median(adc_values,axis=0)
             adc_values_filtered = adc_values_filtered.astype(int)
         return adc_values_filtered
@@ -671,7 +674,7 @@ def main(args=None):
     config_file_path = args.config_file_path
     print("Config File Path: {0}".format(config_file_path))
 
-    debug = False
+    debug = True
     hyb = Hybridizer(debug=debug,calibration_file_path=calibration_file_path,config_file_path=config_file_path)
     hyb.run_protocol()
 
