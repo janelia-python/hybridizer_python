@@ -11,6 +11,7 @@ from numpy.polynomial.polynomial import polyfit,polyadd,Polynomial
 import csv
 import copy
 import numpy
+import sys
 
 try:
     from pkg_resources import get_distribution, DistributionNotFound
@@ -657,8 +658,9 @@ class Hybridizer(object):
     #             data_writer.writerow(row_data)
     #     data_file.close()
 
-# -----------------------------------------------------------------------------------------
-if __name__ == '__main__':
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
     parser = argparse.ArgumentParser()
     parser.add_argument("calibration_file_path", help="Path to yaml calibration file.")
     parser.add_argument("config_file_path", help="Path to yaml config file.")
@@ -669,6 +671,11 @@ if __name__ == '__main__':
     config_file_path = args.config_file_path
     print("Config File Path: {0}".format(config_file_path))
 
-    debug = True
+    debug = False
     hyb = Hybridizer(debug=debug,calibration_file_path=calibration_file_path,config_file_path=config_file_path)
     hyb.run_protocol()
+
+
+# -----------------------------------------------------------------------------------------
+if __name__ == '__main__':
+    main()
