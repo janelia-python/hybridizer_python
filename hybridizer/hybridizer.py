@@ -472,7 +472,10 @@ class Hybridizer(object):
             time.sleep(self._config['load_duration_full'])
             self._set_valves_off(valve_keys)
         self._set_valve_off('system')
+        time.sleep(self._config['post_dispense_volume_duration'])
+        self._set_valves_on(valve_keys)
         time.sleep(self._config['dispense_duration_full'])
+        self._set_valves_off(valve_keys)
         return final_adc_values,jumps_list
 
     def _volume_to_adc_and_ain(self,valve_key,volume):
