@@ -47,8 +47,8 @@ setup_duration: 20
 system_prime_count: 1
 prime_duration: 10
 prime_aspirate_duration: 15
-load_duration: 6
-dispense_duration: 6
+load_duration_full: 6
+dispense_duration_full: 6
 chemical_aspirate_duration: 40
 chemical_separate_duration: 40
 shake_speed_min: &shake_speed_min 200
@@ -57,10 +57,20 @@ aspirate_shake_speed: 200
 separate_shake_speed: 200
 inter_dispense_shake_speed: 400
 inter_dispense_shake_duration: 10
+shake_duration_min: 10
+shake_attempts: 2
+post_shake_off_duration: 5
+adc_sample_count: 21
+fill_duration_all_cylinders: 250
+fill_duration_one_cylinder: 100
+volume_crossover: 6
+volume_max: 10
+volume_threshold_initial: 1.0
+pre_dispense_volume_duration: 2
 protocol:
 - chemical: heptane
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 120
   post_shake_duration: 10
@@ -69,7 +79,7 @@ protocol:
   repeat: 0
 - chemical: methanol
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 1500
   shake_duration: 15
   post_shake_duration: 20
@@ -78,7 +88,7 @@ protocol:
   repeat: 0
 - chemical: methanol
   prime_count: 0
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 0
   shake_duration: 0
   post_shake_duration: 20
@@ -87,7 +97,7 @@ protocol:
   repeat: 3
 - chemical: methanol
   prime_count: 0
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 0
   shake_duration: 0
   post_shake_duration: 0
@@ -96,7 +106,7 @@ protocol:
   repeat: 0
 - chemical: pbt
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 100
   shake_duration: 30
   post_shake_duration: 0
@@ -105,7 +115,7 @@ protocol:
   repeat: 2
 - chemical: pfa
   prime_count: 0
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 1200
   post_shake_duration: 0
@@ -114,7 +124,7 @@ protocol:
   repeat: 0
 - chemical: pbt
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 180
   post_shake_duration: 0
@@ -123,7 +133,7 @@ protocol:
   repeat: 7
 - chemical: block
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 600
   post_shake_duration: 0
@@ -132,7 +142,7 @@ protocol:
   repeat: 1
 - chemical: primary
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 9000
   post_shake_duration: 0
@@ -141,7 +151,7 @@ protocol:
   repeat: 0
 - chemical: pbt
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 360
   post_shake_duration: 0
@@ -150,7 +160,7 @@ protocol:
   repeat: 7
 - chemical: secondary
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 7200
   post_shake_duration: 0
@@ -159,7 +169,7 @@ protocol:
   repeat: 0
 - chemical: pbt
   prime_count: 1
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 360
   post_shake_duration: 0
@@ -168,7 +178,7 @@ protocol:
   repeat: 7
 - chemical: pbt
   prime_count: 0
-  dispense_count: 1
+  dispense_volume: 2
   shake_speed: 200
   shake_duration: 360
   post_shake_duration: 0
