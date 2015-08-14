@@ -483,7 +483,7 @@ class Hybridizer(object):
             ain = valve['analog_inputs']['high']
         if volume > self._config['volume_max']:
             raise HybridizerError('Asking for volume greater than the max volume of {0}!'.format(self._config['volume_max']))
-        if volume <= self._config['self._volume_crossover']:
+        if volume <= self._config['volume_crossover']:
             poly = Polynomial(self._calibration[valve_key]['volume_to_adc_low'])
             adc_value = int(round(poly(volume)))
             self._debug_print("valve: {0}, adc_value: {1}, ain: {2}".format(valve_key,adc_value,ain))
