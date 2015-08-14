@@ -437,8 +437,8 @@ class Hybridizer(object):
                     time.sleep(0.5 + fill_duration_initial_min/1000)
                 self._msc.remove_all_set_fors()
 
-            fill_duration_base = self._fill_duration_one_cylinder
-            fill_duration_per_cylinder = (self._fill_duration_all_cylinders - self._fill_duration_one_cylinder)//(len(channels)-1)
+            fill_duration_base = self._config['fill_duration_one_cylinder']
+            fill_duration_per_cylinder = (self._config['fill_duration_all_cylinders'] - self._config['fill_duration_one_cylinder'])//(len(channels)-1)
             while len(channels) > 0:
                 fill_duration = fill_duration_base + fill_duration_per_cylinder*(len(channels)-1)
                 self._debug_print("Setting {0} valves on for {1}ms".format(valve_keys_copy,fill_duration))
