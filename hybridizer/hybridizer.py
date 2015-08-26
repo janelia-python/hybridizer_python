@@ -31,6 +31,7 @@ else:
 DEBUG = True
 BAUDRATE = 9600
 FILTER_PERIOD = 0.2
+MSC_TIMEOUT = 0.15
 
 class HybridizerError(Exception):
     def __init__(self,value):
@@ -94,7 +95,7 @@ class Hybridizer(object):
             self._SHAKE_SPEED_MIN = self._bsc.get_shake_speed_min()
             self._SHAKE_SPEED_MAX = self._bsc.get_shake_speed_max()
         if self._using_msc:
-            modular_devices = ModularDevices(try_ports=ports,debug=debug_msc)
+            modular_devices = ModularDevices(try_ports=ports,timeout=MSC_TIMEOUT,debug=debug_msc)
 
             try:
                 msc_dict = modular_devices['mixed_signal_controller']
