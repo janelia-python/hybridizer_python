@@ -30,7 +30,7 @@ else:
 
 DEBUG = True
 BAUDRATE = 9600
-
+FILTER_PERIOD = 0.2
 
 class HybridizerError(Exception):
     def __init__(self,value):
@@ -387,7 +387,7 @@ class Hybridizer(object):
                     adc_values = numpy.array([sample_values],int)
                 else:
                     adc_values = numpy.append(adc_values,[sample_values],axis=0)
-                time.sleep(0.1)
+                time.sleep(FILTER_PERIOD)
             adc_values_filtered = numpy.median(adc_values,axis=0)
             adc_values_filtered = adc_values_filtered.astype(int)
         return adc_values_filtered
