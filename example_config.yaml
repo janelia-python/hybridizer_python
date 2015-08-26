@@ -47,8 +47,8 @@ setup_duration: 20
 system_prime_count: 1
 prime_duration: 10
 prime_aspirate_duration: 15
-load_duration_full: 6
-dispense_duration_full: 6
+load_duration_full: 20
+dispense_duration_full: 8
 chemical_aspirate_duration: 40
 chemical_separate_duration: 40
 shake_speed_min: &shake_speed_min 200
@@ -66,7 +66,8 @@ fill_duration_one_cylinder: 100
 volume_crossover: 6
 volume_max: 10
 volume_threshold_initial: 1.0
-pre_dispense_volume_duration: 2
+pre_cylinder_fill_duration: 2
+pre_cylinder_fill_duration: 4
 protocol:
 - chemical: heptane
   prime_count: 1

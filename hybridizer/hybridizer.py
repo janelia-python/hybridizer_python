@@ -59,6 +59,7 @@ class Hybridizer(object):
                  config_file_path,
                  mixed_signal_controller=True,
                  bioshake_device=True,
+                 debug_msc=False,
                  *args,**kwargs):
         if 'debug' in kwargs:
             self._debug = kwargs['debug']
@@ -93,7 +94,7 @@ class Hybridizer(object):
             self._SHAKE_SPEED_MIN = self._bsc.get_shake_speed_min()
             self._SHAKE_SPEED_MAX = self._bsc.get_shake_speed_max()
         if self._using_msc:
-            modular_devices = ModularDevices(try_ports=ports)
+            modular_devices = ModularDevices(try_ports=ports,debug=debug_msc)
 
             try:
                 msc_dict = modular_devices['mixed_signal_controller']
@@ -381,15 +382,12 @@ class Hybridizer(object):
         if self._using_msc:
             adc_values = None
             for sample_n in range(self._config['adc_sample_count']):
-                try:
-                    sample_values = self._msc.get_analog_inputs_filtered()
-                    if adc_values is None:
-                        adc_values = numpy.array([sample_values],int)
-                    else:
-                        adc_values = numpy.append(adc_values,[sample_values],axis=0)
-                    time.sleep(0.1)
-                except IOError:
-                    pass
+                sample_values = self._msc.get_analog_inputs_filtered()
+                if adc_values is None:
+                    adc_values = numpy.array([sample_values],int)
+                else:
+                    adc_values = numpy.append(adc_values,[sample_values],axis=0)
+                time.sleep(0.1)
             adc_values_filtered = numpy.median(adc_values,axis=0)
             adc_values_filtered = adc_values_filtered.astype(int)
         return adc_values_filtered
@@ -671,15 +669,20 @@ def main(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("calibration_file_path", help="Path to yaml calibration file.")
     parser.add_argument("config_file_path", help="Path to yaml config file.")
+    parser.add_argument('-d','--debug-msc',
+                        help='Open mixed_signal_controller in debug mode.',
+                        action='store_true')
 
     args = parser.parse_args()
     calibration_file_path = args.calibration_file_path
     print("Calibration File Path: {0}".format(calibration_file_path))
     config_file_path = args.config_file_path
     print("Config File Path: {0}".format(config_file_path))
+    debug_msc = args.debug_msc
+    print("Debug MSC: {0}".format(debug_msc))
 
     debug = True
-    hyb = Hybridizer(debug=debug,calibration_file_path=calibration_file_path,config_file_path=config_file_path)
+    hyb = Hybridizer(debug=debug,calibration_file_path=calibration_file_path,config_file_path=config_file_path,debug_msc=debug_msc)
     hyb.run_protocol()
 
 
