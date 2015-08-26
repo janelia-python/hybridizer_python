@@ -410,7 +410,8 @@ class Hybridizer(object):
     #     self._debug_print('dispensing ' + chemical + ' into microplate for ' + str(self._config['dispense_duration']) + 's ' + str(i+1) + '/' + str(dispense_volume) + '...')
     #     time.sleep(self._config['dispense_duration'])
         self._set_valve_on('system')
-        time.sleep(self._config['pre_dispense_volume_duration'])
+        self._debug_print('sleeping before cylinder fill for ' + str(self._config['pre_cylinder_fill_duration']) + 's.. ')
+        time.sleep(self._config['pre_cylinder_fill_duration'])
         final_adc_values = None
         jumps_list = None
         if self._using_msc and (volume <= self._config['volume_crossover']):
@@ -473,11 +474,14 @@ class Hybridizer(object):
                 # volume = self._adc_to_volume_low(valve_key,adc_value)
         else:
             self._set_valves_on(valve_keys)
+            self._debug_print('loading chemical into syringes for ' + str(self._config['load_duration_full']) + 's...')
             time.sleep(self._config['load_duration_full'])
             self._set_valves_off(valve_keys)
         self._set_valve_off('system')
-        time.sleep(self._config['post_dispense_volume_duration'])
+        self._debug_print('sleeping after cylinder fill for ' + str(self._config['post_cylinder_fill_duration']) + 's.. ')
+        time.sleep(self._config['post_cylinder_fill_duration'])
         self._set_valves_on(valve_keys)
+        self._debug_print('dispensing chemical into microplate for ' + str(self._config['dispense_duration_full']) + 's.. ')
         time.sleep(self._config['dispense_duration_full'])
         self._set_valves_off(valve_keys)
         return final_adc_values,jumps_list
