@@ -57,6 +57,8 @@ Open a terminal and enter:
 mkdir ~/git
 cd ~/git
 git clone https://github.com/janelia-pypi/hybridizer_python.git
+cd hybridizer_python
+git checkout --track origin/serverfix
 mkdir -p ~/virtualenvs/hybridizer
 virtualenv ~/virtualenvs/hybridizer
 source ~/virtualenvs/hybridizer/bin/activate
