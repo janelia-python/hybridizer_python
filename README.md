@@ -30,6 +30,8 @@ hybridzer example_calibration.yaml example_config.yaml
 
 ##Installation
 
+[Setup Python](https://github.com/janelia-pypi/python_setup)
+
 ####Debian-based Linux Install Dependencies
 
 Open a terminal and enter:
@@ -39,10 +41,6 @@ sudo apt-get install git python-pip python-virtualenv python-dev build-essential
 ```
 
 ###Linux and Mac OS X
-
-[Setup Python for Linux](./PYTHON_SETUP_LINUX.md)
-
-[Setup Python for Mac OS X](./PYTHON_SETUP_MAC_OS_X.md)
 
 Open a terminal and enter:
 
@@ -73,8 +71,6 @@ sudo reboot
 ```
 
 ###Windows
-
-[Setup Python for Windows](./PYTHON_SETUP_WINDOWS.md)
 
 Open a terminal and enter:
 
