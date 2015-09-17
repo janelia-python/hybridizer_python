@@ -39,6 +39,8 @@ hyb.run_protocol()
 
 ##Installation
 
+[Setup Python](https://github.com/janelia-pypi/python_setup)
+
 ####Debian-based Linux Install Dependencies
 
 Open a terminal and enter:
@@ -49,16 +51,12 @@ sudo apt-get install git python-virtualenv -y
 
 ###Linux and Mac OS X
 
-[Setup Python for Linux](./PYTHON_SETUP_LINUX.md)
-
-[Setup Python for Mac OS X](./PYTHON_SETUP_MAC_OS_X.md)
-
 Open a terminal and enter:
 
 ```shell
 mkdir ~/git
 cd ~/git
-git clone https://github.com/JaneliaSciComp/hybridizer_python.git
+git clone https://github.com/janelia-pypi/hybridizer_python.git
 mkdir -p ~/virtualenvs/hybridizer
 virtualenv ~/virtualenvs/hybridizer
 source ~/virtualenvs/hybridizer/bin/activate
@@ -79,8 +77,6 @@ sudo reboot
 ```
 
 ###Windows
-
-[Setup Python for Windows](./PYTHON_SETUP_WINDOWS.md)
 
 Open a terminal and enter:
 
