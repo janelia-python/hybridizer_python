@@ -58,14 +58,11 @@ mkdir ~/git
 cd ~/git
 git clone https://github.com/janelia-pypi/hybridizer_python.git
 cd hybridizer_python
-git checkout --track origin/serverfix
+git checkout --track origin/digital
 mkdir -p ~/virtualenvs/hybridizer
 virtualenv ~/virtualenvs/hybridizer
 source ~/virtualenvs/hybridizer/bin/activate
-pip install ipython
-pip install modular_device
-pip install bioshake_device
-pip install pyyaml
+pip install ipython modular_device bioshake_device pyyaml
 ```
 
 On linux, you may need to add yourself to the group 'dialout' in order
