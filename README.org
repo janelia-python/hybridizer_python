@@ -21,17 +21,17 @@
   Open a terminal and enter:
 
   #+BEGIN_SRC sh
-source ~/virtualenvs/hybridizer/bin/activate
-cd ~/git/hybridizer_python
-ipython
+    source ~/virtualenvs/hybridizer/bin/activate
+    cd ~/git/hybridizer_python
+    ipython
   #+END_SRC
 
   In iPython enter:
 
   #+BEGIN_SRC python
-from hybridizer import Hybridizer
-hyb = Hybridizer('example_config.yaml')
-hyb.run_protocol()
+    from hybridizer import Hybridizer
+    hyb = Hybridizer('example_config.yaml')
+    hyb.run_protocol()
   #+END_SRC
 
 * Installation
@@ -43,7 +43,7 @@ hyb.run_protocol()
     Open a terminal and enter:
 
     #+BEGIN_SRC sh
-sudo apt-get install git python-virtualenv -y
+      sudo apt-get install git python-virtualenv -y
     #+END_SRC
 
 ** Linux and Mac OS X
@@ -51,15 +51,15 @@ sudo apt-get install git python-virtualenv -y
    Open a terminal and enter:
 
    #+BEGIN_SRC sh
-mkdir ~/git
-cd ~/git
-git clone https://github.com/janelia-pypi/hybridizer_python.git
-cd hybridizer_python
-git checkout --track origin/digital
-mkdir -p ~/virtualenvs/hybridizer
-virtualenv ~/virtualenvs/hybridizer
-source ~/virtualenvs/hybridizer/bin/activate
-pip install ipython modular_device bioshake_device pyyaml
+     mkdir ~/git
+     cd ~/git
+     git clone https://github.com/janelia-pypi/hybridizer_python.git
+     cd hybridizer_python
+     git checkout --track origin/digital
+     mkdir -p ~/virtualenvs/hybridizer
+     virtualenv ~/virtualenvs/hybridizer
+     source ~/virtualenvs/hybridizer/bin/activate
+     pip install ipython modular_device bioshake_device pyyaml
    #+END_SRC
 
    On linux, you may need to add yourself to the group 'dialout' in order
@@ -68,8 +68,8 @@ pip install ipython modular_device bioshake_device pyyaml
    Open a terminal and enter:
 
    #+BEGIN_SRC sh
-sudo usermod -aG dialout $USER
-sudo reboot
+     sudo usermod -aG dialout $USER
+     sudo reboot
    #+END_SRC
 
 ** Windows
@@ -77,10 +77,10 @@ sudo reboot
    Open a terminal and enter:
 
    #+BEGIN_SRC sh
-virtualenv C:\virtualenvs\hybridizer
-C:\virtualenvs\hybridizer\Scripts\activate
-pip install ipython
-pip install modular_device
-pip install bioshake_device
-pip install pyyaml
+     virtualenv C:\virtualenvs\hybridizer
+     C:\virtualenvs\hybridizer\Scripts\activate
+     pip install ipython
+     pip install modular_device
+     pip install bioshake_device
+     pip install pyyaml
    #+END_SRC
