@@ -11,7 +11,7 @@ bioshake_device controls the heater/shaker.
 
 Authors::
 
-    Peter Polidoro <polidorop@janelia.hhmi.org>
+    Peter Polidoro <peterpolidoro@gmail.com>
 
 License::
 
@@ -22,4 +22,3 @@ Example Usage::
     from hybridizer import Hybridizer
     hyb = Hybridizer('example_calibration.yaml','example_config.yaml')
     hyb.run_protocol()
-
