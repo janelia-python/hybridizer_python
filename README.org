@@ -3,8 +3,12 @@
 #+EMAIL: peterpolidoro@gmail.com
 
 * Package Information
-  - Author :: Peter Polidoro
+  - Name :: hybridizer_python
+  - Version :: 1.17
   - License :: BSD
+  - URL :: https://github.com/janelia-pypi/hybridizer_python
+  - Author :: Peter Polidoro
+  - Email :: peterpolidoro@gmail.com
 
   This Python package (hybridizer) creates a class named Hybridizer to
   communcate with and control the Janelia Hybridizer. The hybridizer
