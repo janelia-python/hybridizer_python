@@ -20,7 +20,7 @@
 
 * Example Usage
 
-  [[./example_config.yaml][Example Config File]]
+  [[./example_config.yaml]]
 
   Open a terminal and enter:
 
@@ -40,7 +40,7 @@
 
 * Installation
 
-  [[https://github.com/janelia-pypi/python_setup][Setup Python]]
+  [[https://github.com/janelia-pypi/python_setup]]
 
 *** Debian-based Linux Install Dependencies
 
