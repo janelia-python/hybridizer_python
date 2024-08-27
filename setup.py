@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/janelia-pypi/hybridizer_python',
+    url='https://github.com/janelia-python/hybridizer_python',
 
     # Author details
     author='Peter Polidoro',

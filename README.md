@@ -30,7 +30,7 @@ hybridzer example_calibration.yaml example_config.yaml
 
 ##Installation
 
-[Setup Python](https://github.com/janelia-pypi/python_setup)
+[Setup Python](https://github.com/janelia-python/python_setup)
 
 ####Debian-based Linux Install Dependencies
 
